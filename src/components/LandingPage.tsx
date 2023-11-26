@@ -16,34 +16,43 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { CardAvatarCreate } from "./CardAvatarCreate"
+import { ModeToggle } from "./mode-toggle"
 
 export function LandingPage() {
   return (
     <div className="flex flex-col justify-between items-center w-full"> {/* Full screen container */}
-      <h1 className="mt-20 mb-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-        Welcome to Firepit
+      <h1 className="mt-16 mb-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+        Welcome to Firepit <ModeToggle/>
       </h1>
       <code>Version 0.0.1</code>
-
+    <br></br>
     <Tabs defaultValue="join" className="w-[800px]">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="join">Join A Room</TabsTrigger>
         <TabsTrigger value="create">Create The Room</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="join">
+  {/* JOIN ROOM TAB MAIN UI */}
 
-        <Card>
+  <TabsContent value="join">
+  <Card>
           <CardHeader>
-            <CardTitle>Join A Room</CardTitle>
-            <CardDescription>
-              Make changes to your account here. Click save when you're done.
-            </CardDescription>
+            <CardTitle>Room Access Code</CardTitle>
+            <CardDescription>Enter the access code you received.</CardDescription>
+            <Input type="text" placeholder="e.g., A1B2C3" />
           </CardHeader>
+        <hr/>
+          <CardHeader>
+          <CardTitle>Create Your Profile</CardTitle>
+        <CardDescription>Select a unique nickname and choose your avatar.</CardDescription>
+          </CardHeader>
+    
     <div className="flex justify-center mb-4">
     <CardAvatarCreate/>
     </div>
-        </Card>
+  </Card>
+
+  {/* CREATE ROOM TAB MAIN UI */}
 
       </TabsContent>
       <TabsContent value="create">

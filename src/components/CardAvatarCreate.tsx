@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/avatar"
 
 import { Toggle } from "@/components/ui/toggle"
-import { ModeToggle } from "./mode-toggle"
 
 export function CardAvatarCreate() {
 
@@ -48,12 +47,8 @@ export function CardAvatarCreate() {
 
   return (
     <Card className="w-[600px]">
-      <ModeToggle/>
-      <CardHeader>
-        <CardTitle>Identify yourself</CardTitle>
-        <CardDescription>Choose a nickname, and an avatar!</CardDescription>
-      </CardHeader>
       <CardContent>
+        <br></br>
         <div className="grid w-full items-center gap-4">
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="name">Name:</Label>
