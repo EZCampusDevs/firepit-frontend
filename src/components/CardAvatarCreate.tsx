@@ -27,9 +27,19 @@ import {
 
 import { Toggle } from "@/components/ui/toggle"
 
-export function CardAvatarCreate() {
+interface CardAvatarCreateProps {
+  onAction: (value: any) => void; // Define the type of your callback function
+}
 
-  const githubProfiles = [
+export function CardAvatarCreate({ onAction }: CardAvatarCreateProps) {
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    onAction(newValue);
+    return
+  };
+
+  const avatarImgs = [
     "https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png",
     "https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png",
     "https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png",
@@ -52,7 +62,7 @@ export function CardAvatarCreate() {
         <div className="grid w-full items-center gap-4">
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="name">Name:</Label>
-            <Input id="name" placeholder="Enter nickname" />
+            <Input id="name" placeholder="Enter nickname" onChange={handleInputChange} />
           </div>
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="framework">Department:</Label>
@@ -73,7 +83,7 @@ export function CardAvatarCreate() {
         <div className="flex flex-col space-y-1.5">
           {/* Avatars container */}
           <div className="grid grid-cols-6 gap-4">
-            {githubProfiles.map((_, index) => (
+            {avatarImgs.map((_, index) => (
               <Toggle aria-label="Set Avatar Icon" className="pt-2">
                 <Avatar key={index}>
                   <AvatarImage src={_} alt={`avatar icon`} />

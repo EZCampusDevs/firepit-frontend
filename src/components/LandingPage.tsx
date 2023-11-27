@@ -1,3 +1,4 @@
+import React from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,6 +20,15 @@ import { CardAvatarCreate } from "./CardAvatarCreate"
 import { ModeToggle } from "./mode-toggle"
 
 export function LandingPage() {
+
+  const [inputValue, setInputValue] = React.useState('');
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    setInputValue(newValue);
+    console.log(newValue);
+  };
+
   return (
     <div className="flex flex-col justify-between items-center w-full"> {/* Full screen container */}
       <h1 className="mt-16 mb-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
@@ -39,7 +49,7 @@ export function LandingPage() {
           <CardHeader>
             <CardTitle>Room Access Code</CardTitle>
             <CardDescription>Enter the access code you received.</CardDescription>
-            <Input type="text" placeholder="e.g., A1B2C3" />
+            <Input type="text" placeholder="e.g., A1B2C3" onChange={handleInputChange} />
           </CardHeader>
         <hr/>
           <CardHeader>
@@ -48,13 +58,14 @@ export function LandingPage() {
           </CardHeader>
     
     <div className="flex justify-center mb-4">
-    <CardAvatarCreate/>
+    <CardAvatarCreate onAction={(value) => console.log("Action value:", value)}/>
     </div>
   </Card>
+  </TabsContent>
 
   {/* CREATE ROOM TAB MAIN UI */}
 
-      </TabsContent>
+      
       <TabsContent value="create">
         <Card>
           <CardHeader>
