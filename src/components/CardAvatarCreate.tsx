@@ -27,6 +27,8 @@ import {
 
 import { Toggle } from "@/components/ui/toggle"
 
+import { newRoom } from "../core/requests" //TODO: remove and put into landing pg
+
 interface CardAvatarCreateProps {
   onAction: (value: any) => void; // Define the type of your callback function
 }
@@ -97,7 +99,7 @@ export function CardAvatarCreate({ onAction }: CardAvatarCreateProps) {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline">Clear</Button>
-        <Button>Join Room</Button>
+        <Button onClick={() => {newRoom("room_a",50)}}>Join Room</Button>
       </CardFooter>
     </Card>
   );

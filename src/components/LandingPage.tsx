@@ -19,9 +19,17 @@ import {
 import { CardAvatarCreate } from "./CardAvatarCreate"
 import { ModeToggle } from "./mode-toggle"
 
+import { Slider } from "@/components/ui/slider"
+
 export function LandingPage() {
 
   const [inputValue, setInputValue] = React.useState('');
+
+  //* ------------ Create Room State & Constants ----------------
+
+  const DEFAULT_ROOM_CAPACITY = 25;
+
+  const [roomCapDisplay, setRoomCapDisplay] = React.useState(String(DEFAULT_ROOM_CAPACITY));
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
@@ -47,9 +55,9 @@ export function LandingPage() {
   <TabsContent value="join">
   <Card>
           <CardHeader>
-            <CardTitle>Room Access Code</CardTitle>
-            <CardDescription>Enter the access code you received.</CardDescription>
-            <Input type="text" placeholder="e.g., A1B2C3" onChange={handleInputChange} />
+            <CardTitle>Room Access Code</CardTitle> 
+            <div></div>
+            <Input type="text" placeholder="e.g., A1B2C3" onChange={handleInputChange} sizeStyle={"h-12"} />
           </CardHeader>
         <hr/>
           <CardHeader>
@@ -67,27 +75,33 @@ export function LandingPage() {
 
       
       <TabsContent value="create">
-        <Card>
+      <Card>
           <CardHeader>
-            <CardTitle>Create The Room</CardTitle>
-            <CardDescription>
-              Change your password here. After saving, you'll be logged out.
-            </CardDescription>
+            <CardTitle>Name Your Room</CardTitle>
+            <div></div>
+            <Input type="text" placeholder="e.g., Firepit Marketting Strategy Session" sizeStyle={"h-12"} />
+            <br/>
+            <CardTitle>Capacity Limit</CardTitle>
+            <CardDescription>Set the maximum number of participants allowed | Currently set to: {roomCapDisplay} persons.</CardDescription>
+                  
+            <Slider
+              defaultValue={[DEFAULT_ROOM_CAPACITY]}
+              max={100}
+              step={1}
+              onValueChange={(valueInt) => {setRoomCapDisplay(String(valueInt))}} 
+              />
+
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="space-y-1">
-              <Label htmlFor="current">Current password</Label>
-              <Input id="current" type="password" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="new">New password</Label>
-              <Input id="new" type="password" />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button>Save password</Button>
-          </CardFooter>
-        </Card>
+        <hr/>
+          <CardHeader>
+          <CardTitle>Create Your Profile</CardTitle>
+        <CardDescription>Select a unique nickname and choose your avatar.</CardDescription>
+          </CardHeader>
+    
+    <div className="flex justify-center mb-4">
+    <CardAvatarCreate onAction={(value) => console.log("Action value:", value)}/>
+    </div>
+  </Card>
       </TabsContent>
     </Tabs>
     </div>
