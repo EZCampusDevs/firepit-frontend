@@ -35,6 +35,11 @@ interface CardAvatarCreateProps {
 
 export function CardAvatarCreate({ onAction }: CardAvatarCreateProps) {
 
+  //* ------------------- Generic React State ------------------------
+
+  const [selectedAvatar, setSelectedAvatar] = React.useState(-1);
+
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
     onAction(newValue);
@@ -55,7 +60,6 @@ export function CardAvatarCreate({ onAction }: CardAvatarCreateProps) {
     "https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png",
     "https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png",
   ];
-
 
   return (
     <Card className="w-[600px]">
@@ -83,22 +87,40 @@ export function CardAvatarCreate({ onAction }: CardAvatarCreateProps) {
 
         <Label htmlFor="framework">Avatar:</Label>
         <div className="flex flex-col space-y-1.5">
-          {/* Avatars container */}
-          <div className="grid grid-cols-6 gap-4">
-            {avatarImgs.map((_, index) => (
-              <Toggle aria-label="Set Avatar Icon" className="pt-2">
-                <Avatar key={index}>
-                  <AvatarImage src={_} alt={`avatar icon`} />
-                  <AvatarFallback>{`${index}`}</AvatarFallback>
-                </Avatar>
-              </Toggle>
-            ))}
-          </div>
+          
+{/* Avatars container */}
+<div className="grid grid-cols-6 gap-4">
+
+    {avatarImgs.map((avatarSrc, index) => (
+        <Toggle
+            aria-label="Set Avatar Icon"
+            className="pt-2"
+            key={index}
+            toggled={selectedAvatar === index}
+            onClick={() => {
+              if(selectedAvatar == index) {
+                setSelectedAvatar(-1);
+              } else {
+                setSelectedAvatar(index);
+              }
+            }}
+        >
+            <Avatar>
+                <AvatarImage src={avatarSrc} alt={`avatar icon`} />
+                <AvatarFallback>{`${index}`}</AvatarFallback>
+            </Avatar>
+        </Toggle>
+    ))}
+</div>
+
           </div>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Clear</Button>
+
+        {/* TODO: Make the clear btn. actually clear the whole form */}
+
+        <Button variant="outline" onClick={() => setSelectedAvatar(-1)}>Clear</Button>
         <Button onClick={() => {newRoom("room_a",50)}}>Join Room</Button>
       </CardFooter>
     </Card>

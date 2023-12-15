@@ -39,12 +39,11 @@ export function LandingPage() {
 
   return (
     <div className="flex flex-col justify-between items-center w-full"> {/* Full screen container */}
-      <h1 className="mt-16 mb-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+      <h1 className="mt-16 mb-2 text-4xl font-extrabold tracking-tight lg:text-5xl sm:text-lg">
         Welcome to Firepit <ModeToggle/>
       </h1>
       <code>Version 0.0.1</code>
-    <br></br>
-    <Tabs defaultValue="join" className="w-[800px]">
+      <Tabs defaultValue="join" className="w-full md:w-[800px] max-w-[95%]">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="join">Join A Room</TabsTrigger>
         <TabsTrigger value="create">Create The Room</TabsTrigger>
