@@ -1,10 +1,10 @@
 import { CrowdCard } from "../CrowdCard";
 
+//* ------------ SIMPLE VIEW COMPONENT -----------------
+
 interface SimpleRoomViewProps {
     isCallerSpeaking: boolean; // If the user is speaking, this will be true
   }
-
-//* ------------ COMPLEX VIEW COMPONENT -----------------
 
 export function SimpleRoomView(props: SimpleRoomViewProps) {
   const { isCallerSpeaking } = props;

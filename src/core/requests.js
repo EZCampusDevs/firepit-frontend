@@ -5,13 +5,10 @@ const WS_PREFIX = 'ws' //!In production we'll change this to `wss`
 
 //* ------------------ Create of a Room ------------------
 
-export function newRoom() {
-    // Define your payload here
-    let payload = {
-        room_name: "YourRoomName", // Replace with the desired room name
-        room_capacity: 10, // Replace with the desired room capacity
-        require_occupation: false,
-    };
+export function newRoom(room_name, room_capacity, require_occupation) {
+
+    //* ---- Room Creation Payload ---
+    let payload = { room_name, room_capacity, require_occupation };
 
     fetch(`http://${HOST}/room/new`, {
         method: 'POST',
@@ -22,7 +19,7 @@ export function newRoom() {
     })
     .then(response => response.text())
     .then(roomId => {
-        socket_connect(roomId);
+        socket_connect(roomId, "hello", "soft e.", 1);
     })
     .catch(error => console.error('Error:', error));
 }
@@ -33,7 +30,7 @@ function getOKMessage(){
     });
 }
 
-function socket_connect(roomId, displayName){
+function socket_connect(roomId, displayName, displayOccupation, avatarIndexInt){
 
     if(ws && ws.readyState === WebSocket.OPEN){
         console.log("already in a room")
@@ -45,7 +42,7 @@ function socket_connect(roomId, displayName){
     }
     console.log("Got room id from server " + roomId);
 
-    ws = new WebSocket(`${WS_PREFIX}://${HOST}/websocket/?rid=${roomId}&disp_name=${displayName}`);
+    ws = new WebSocket(`${WS_PREFIX}://${HOST}/websocket/?rid=${roomId}&disp_name=${displayName}&disp_occup=${displayOccupation}&disp_avatar=${avatarIndexInt}`);
 
     ws.onopen = function (event) {
         console.log("websocket open");

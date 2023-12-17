@@ -27,7 +27,6 @@ import {
 
 import { Toggle } from "@/components/ui/toggle"
 
-import { newRoom } from "../core/requests" //TODO: remove and put into landing pg
 
 interface CardAvatarCreateProps {
   onAction: (value: any) => void; // Define the type of your callback function
@@ -126,7 +125,7 @@ export function CardAvatarCreate({ onAction, requiredOccupation }: CardAvatarCre
         {/* TODO: Make the clear btn. actually clear the whole form */}
 
         <Button variant="outline" onClick={() => setSelectedAvatar(-1)}>Clear</Button>
-        <Button onClick={() => {newRoom("room_a",50)}}>Join Room</Button>
+        <Button onClick={() => {onAction(200)}}>Join Room</Button>
       </CardFooter>
     </Card>
   );
