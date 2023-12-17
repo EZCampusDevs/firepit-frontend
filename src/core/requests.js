@@ -1,6 +1,7 @@
 let ws;
 const HOST = "localhost:8080/firepit";
 
+const WS_PREFIX = 'ws' //!In production we'll change this to `wss` 
 
 //* ------------------ Create of a Room ------------------
 
@@ -8,7 +9,8 @@ export function newRoom() {
     // Define your payload here
     let payload = {
         room_name: "YourRoomName", // Replace with the desired room name
-        room_capacity: 10 // Replace with the desired room capacity
+        room_capacity: 10, // Replace with the desired room capacity
+        require_occupation: false,
     };
 
     fetch(`http://${HOST}/room/new`, {
@@ -31,7 +33,7 @@ function getOKMessage(){
     });
 }
 
-function socket_connect(roomId){
+function socket_connect(roomId, displayName){
 
     if(ws && ws.readyState === WebSocket.OPEN){
         console.log("already in a room")
@@ -41,11 +43,9 @@ function socket_connect(roomId){
     if(ws) {
         ws.close();
     }
-    const d = document.getElementById("clientName");
-    
     console.log("Got room id from server " + roomId);
 
-    ws = new WebSocket(`ws://${HOST}/websocket/?rid=${roomId}&name=${d.value}`);
+    ws = new WebSocket(`${WS_PREFIX}://${HOST}/websocket/?rid=${roomId}&disp_name=${displayName}`);
 
     ws.onopen = function (event) {
         console.log("websocket open");

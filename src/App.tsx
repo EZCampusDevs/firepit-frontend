@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { LandingPage } from "./components/LandingPage";
-import { CardDemo } from './components/CardDemo';
-import { CardAvatarCreate } from './components/CardAvatarCreate';
 
 import { ThemeProvider } from "@/components/theme-provider"
+import { RoomPage } from "./components/RoomPage";
+import { CrowdCard } from "./components/CrowdCard";
 
 function App() {
   return (
@@ -12,8 +12,8 @@ function App() {
     <Router>
         <Routes>
           <Route path="/" element={<LandingPage />}></Route>
-          <Route path="/landing" element={<CardDemo />}></Route>
-          <Route path="/id" element={<CardAvatarCreate />}></Route>
+          <Route path="/landing" element={<CrowdCard />}></Route>
+          <Route path="/room" element={<RoomPage />}></Route>
         </Routes>
       </Router>
       </ThemeProvider>

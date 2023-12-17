@@ -31,9 +31,10 @@ import { newRoom } from "../core/requests" //TODO: remove and put into landing p
 
 interface CardAvatarCreateProps {
   onAction: (value: any) => void; // Define the type of your callback function
+  requiredOccupation: boolean;
 }
 
-export function CardAvatarCreate({ onAction }: CardAvatarCreateProps) {
+export function CardAvatarCreate({ onAction, requiredOccupation }: CardAvatarCreateProps) {
 
   //* ------------------- Generic React State ------------------------
 
@@ -70,6 +71,8 @@ export function CardAvatarCreate({ onAction }: CardAvatarCreateProps) {
             <Label htmlFor="name">Name:</Label>
             <Input id="name" placeholder="Enter nickname" onChange={handleInputChange} />
           </div>
+          
+        {requiredOccupation &&
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="framework">Department:</Label>
             <Select>
@@ -84,6 +87,8 @@ export function CardAvatarCreate({ onAction }: CardAvatarCreateProps) {
               </SelectContent>
             </Select>
           </div>
+        }
+
 
         <Label htmlFor="framework">Avatar:</Label>
         <div className="flex flex-col space-y-1.5">
