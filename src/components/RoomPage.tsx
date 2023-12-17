@@ -6,6 +6,7 @@ import { SpeakerCard } from "./SpeakerCard";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ComplexRoomView } from "./room_views/ComplexRoomView";
+import { SimpleRoomView } from "./room_views/SimpleRoomView";
 
 export function RoomPage() {
 
@@ -42,17 +43,10 @@ export function RoomPage() {
 
             <div className="max-w-6xl w-full px-4">
             {
-                isSimpleView ? <ComplexRoomView isCallerSpeaking={false}/> :             
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl w-full px-4">
-                {/* Placeholder cards */}
-                <CrowdCard />
-                <CrowdCard />
-                <CrowdCard />
-                <CrowdCard />
-                <CrowdCard />
-
-                {/* Add more placeholder cards as needed */}
-            </div>
+                isSimpleView ? 
+                <ComplexRoomView isCallerSpeaking={false}/> :
+                <SimpleRoomView isCallerSpeaking={false}/>             
+                
 
             }
             </div>

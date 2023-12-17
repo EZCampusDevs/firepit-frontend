@@ -20,9 +20,14 @@ import {
 
 type CardProps = React.ComponentProps<typeof Card>
 
-export function CrowdCard({ className, ...props }: CardProps) {
+interface CrowdCardProps {
+    isCallerSpeaking: boolean;
+}
+
+export function CrowdCard(props: CrowdCardProps) {
+    const { isCallerSpeaking } = props;
   return (
-    <Card className={cn("w-[250px]", className)} {...props}>
+    <Card className={cn("w-[250px]", "")}>
 
     <CardHeader className="grid grid-cols-[auto_minmax(0,1fr)] gap-4">
         <Avatar>
@@ -41,9 +46,11 @@ export function CrowdCard({ className, ...props }: CardProps) {
 
       </CardContent>
       <CardFooter>
+        { isCallerSpeaking &&
         <Button className="w-full">
           <Check className="mr-2 h-4 w-4" /> Pass the Stick
         </Button>
+}
       </CardFooter>
     </Card>
   )
