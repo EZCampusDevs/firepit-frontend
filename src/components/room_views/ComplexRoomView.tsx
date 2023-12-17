@@ -75,7 +75,7 @@ export type Client = {
   is_speaking: boolean
 }
 
-export const columns: ColumnDef<Client>[] = [
+export let columns: ColumnDef<Client>[] = [
   {
     id: "select",
     enableSorting: false,
@@ -137,12 +137,13 @@ export const columns: ColumnDef<Client>[] = [
 //* ------------ PROPS -----------------
 
 interface ComplexRoomViewProps {
-    isSpeaking: boolean; // Add the new boolean prop here
+    isCallerSpeaking: boolean; // If the user is speaking, this will be true
   }
 
 //* ------------ COMPLEX VIEW COMPONENT -----------------
 
-export function ComplexRoomView() {
+export function ComplexRoomView(props: ComplexRoomViewProps) {
+  const { isCallerSpeaking } = props;
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -167,6 +168,38 @@ export function ComplexRoomView() {
     },
   })
 
+  //* --- Window Resize (Mobile State) ---
+  const [isWideScreen, setIsWideScreen] = React.useState(window.innerWidth > 768); // Example breakpoint
+
+  React.useEffect(() => {
+      const handleResize = () => {
+          setIsWideScreen(window.innerWidth > 768); // Update based on the same breakpoint
+      };
+
+      window.addEventListener('resize', handleResize);
+
+      // Cleanup listener on component unmount
+      return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  React.useEffect(() => {
+    if (!isWideScreen) {
+      // Hide the Status and Occupation columns for mobile devices
+      table.getColumn('status')?.toggleVisibility(false);
+      table.getColumn('occupation')?.toggleVisibility(false);
+    } else {
+      // Show the columns for wider screens
+      table.getColumn('status')?.toggleVisibility(true);
+      table.getColumn('occupation')?.toggleVisibility(true);
+    }
+  }, [isWideScreen, table]);
+
+  //* ---------Remove Actions if caller isn't speaking------------
+
+  if(!isCallerSpeaking) {
+  columns = columns.filter(column => column.accessorKey !== "action");
+  }
+  
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
