@@ -19,7 +19,7 @@ export function newRoom(room_name, room_capacity, require_occupation) {
     })
     .then(response => response.text())
     .then(roomId => {
-        socket_connect(roomId, "hello", "soft e.", 1);
+        socket_connect(roomId, "jay", "soft e.", 1);
     })
     .catch(error => console.error('Error:', error));
 }

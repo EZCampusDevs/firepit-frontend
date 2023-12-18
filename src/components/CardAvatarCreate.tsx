@@ -29,7 +29,7 @@ import { Toggle } from "@/components/ui/toggle"
 
 
 interface CardAvatarCreateProps {
-  onAction: (value: any) => void; // Define the type of your callback function
+  onAction: (value: any) => void;
   requiredOccupation: boolean;
 }
 
@@ -37,14 +37,42 @@ export function CardAvatarCreate({ onAction, requiredOccupation }: CardAvatarCre
 
   //* ------------------- Generic React State ------------------------
 
+  const displayNameRef = React.useRef('');
   const [selectedAvatar, setSelectedAvatar] = React.useState(-1);
+  const [selectedDepartment, setSelectedDepartment] = React.useState('');
 
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    onAction(newValue);
-    return
-  };
+  //This function will return either the data needed for Avatar Creation, or an error with error msg
+  //* [ Success_Status, Payload ]
+
+  const handleAvatarCreate = () => {
+    const nickname = displayNameRef.current.value;
+    let avatar = selectedAvatar;
+    let department = selectedDepartment;
+
+
+    //! ---- Assertions ----
+    if (nickname.length < 3 || nickname.length > 32) {
+      onAction([false, "Nickname must be between 3 and 32 characters"]);
+      return;
+    }
+
+    if (!Number.isInteger(avatar)) {
+      onAction([false, "Avatar selection was invalid"]);
+      return;
+    }
+
+    if (requiredOccupation && (!department || department.trim() === "")) {
+      onAction([false, "Selected department cannot be blank"]);
+      return;
+    }
+
+    //* Passed all Assertions, Successful Case:
+
+    onAction([true, { nickname, avatar, department }]);
+    return;
+  }
+
 
   const avatarImgs = [
     "https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png",
@@ -68,64 +96,70 @@ export function CardAvatarCreate({ onAction, requiredOccupation }: CardAvatarCre
         <div className="grid w-full items-center gap-4">
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="name">Name:</Label>
-            <Input id="name" placeholder="Enter nickname" onChange={handleInputChange} />
+            <Input id="name" placeholder="Enter nickname" ref={displayNameRef} />
           </div>
-          
-        {requiredOccupation &&
+
+          {requiredOccupation &&
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="occupation">Department:</Label>
+
+              <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+                <SelectTrigger id="occupation">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  <SelectItem value="f">Finance</SelectItem>
+                  <SelectItem value="it">IT & Support</SelectItem>
+                  <SelectItem value="sd">Software Development</SelectItem>
+                  <SelectItem value="do">Dev. Ops</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          }
+
+
+          <Label htmlFor="framework">Avatar:</Label>
           <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="framework">Department:</Label>
-            <Select>
-              <SelectTrigger id="framework">
-                <SelectValue placeholder="Select" />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                <SelectItem value="f">Finance</SelectItem>
-                <SelectItem value="it">IT & Support</SelectItem>
-                <SelectItem value="sd">Software Development</SelectItem>
-                <SelectItem value="do">Dev. Ops</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        }
 
+            {/* Avatars container */}
+            <div className="grid grid-cols-6 gap-4">
 
-        <Label htmlFor="framework">Avatar:</Label>
-        <div className="flex flex-col space-y-1.5">
-          
-{/* Avatars container */}
-<div className="grid grid-cols-6 gap-4">
-
-    {avatarImgs.map((avatarSrc, index) => (
-        <Toggle
-            aria-label="Set Avatar Icon"
-            className="pt-2"
-            key={index}
-            toggled={selectedAvatar === index}
-            onClick={() => {
-              if(selectedAvatar == index) {
-                setSelectedAvatar(-1);
-              } else {
-                setSelectedAvatar(index);
-              }
-            }}
-        >
-            <Avatar>
-                <AvatarImage src={avatarSrc} alt={`avatar icon`} />
-                <AvatarFallback>{`${index}`}</AvatarFallback>
-            </Avatar>
-        </Toggle>
-    ))}
-</div>
+              {avatarImgs.map((avatarSrc, index) => (
+                <Toggle
+                  aria-label="Set Avatar Icon"
+                  className="pt-2"
+                  key={index}
+                  toggled={selectedAvatar === index}
+                  onClick={() => {
+                    if (selectedAvatar == index) {
+                      setSelectedAvatar(-1);
+                    } else {
+                      setSelectedAvatar(index);
+                    }
+                  }}
+                >
+                  <Avatar>
+                    <AvatarImage src={avatarSrc} alt={`avatar icon`} />
+                    <AvatarFallback>{`${index}`}</AvatarFallback>
+                  </Avatar>
+                </Toggle>
+              ))}
+            </div>
 
           </div>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
 
-        {/* TODO: Make the clear btn. actually clear the whole form */}
+        {/* CLEAR BUTTON | Clear's entire Avatar Creation Section */}
 
-        <Button variant="outline" onClick={() => setSelectedAvatar(-1)}>Clear</Button>
-        <Button onClick={() => {onAction(200)}}>Join Room</Button>
+        <Button variant="outline" onClick={() => {
+          setSelectedAvatar(-1);
+          displayNameRef.current.value = '';
+          setSelectedDepartment('');
+        }}>Clear</Button>
+
+        <Button onClick={() => { handleAvatarCreate() }}>Join Room</Button>
       </CardFooter>
     </Card>
   );
