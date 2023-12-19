@@ -15,7 +15,7 @@ export class WebSocketSingleton {
     this.WS_PREFIX = "ws"; // In production, change this to `wss`
   }
 
-  connect(SOCKET_CONNECTION_PAYLOAD) {
+  connect(SOCKET_CONNECTION_PAYLOAD, callback) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       console.log("ERROR CONNECTING: Already in a room");
       return;
@@ -36,9 +36,9 @@ export class WebSocketSingleton {
     };
 
     this.ws.onmessage = function (event) {
-      console.log("room data: " + event.data);
 
-      const json = JSON.parse(event.data);
+        const json = JSON.parse(event.data);
+        callback(json);
 
       if (!json) {
         return;

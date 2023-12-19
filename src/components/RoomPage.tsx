@@ -10,6 +10,8 @@ import { ComplexRoomView } from "./room_views/ComplexRoomView";
 import { SimpleRoomView } from "./room_views/SimpleRoomView";
 
 //* API & WS Imports
+
+// @ts-expect-error | Javascript Import
 import { WebSocketSingleton } from "../core/WebSocketSingleton"
 
 export function RoomPage() {
@@ -41,9 +43,18 @@ export function RoomPage() {
         setIsSimpleView(!isSimpleView);
     };
 
+    const wsCallback = (data : any) => {
+        console.log("COMPONENT PRINT: ");
+        console.log(data);
+    }
+
+
     React.useEffect(() => {
+
+        //* Use WS Singleton instance, ensure's a global & singular definition of the Instance
         const wsManager = WebSocketSingleton.getInstance();
-        wsManager.connect(rawQueryString);
+        wsManager.connect(rawQueryString, wsCallback);
+
       }, []);
 
     return (
