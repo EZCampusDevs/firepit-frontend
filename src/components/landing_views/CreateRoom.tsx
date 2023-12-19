@@ -79,7 +79,9 @@ export function CreateRoom() {
         </CardHeader>
 
         <div className="flex justify-center mb-4">
-          <CardAvatarCreate onAction={(value) => {
+          <CardAvatarCreate 
+          requiredOccupation={occupationMandate}
+          onAction={(value) => {
 
             if(value[0] === true){ //* Successful Avatar Creation
               
@@ -92,7 +94,7 @@ export function CreateRoom() {
               const errorMessage = value[1];
             }
 
-          }} requiredOccupation={true}/>
+          }}/>
         </div>
       </Card>
     </TabsContent>

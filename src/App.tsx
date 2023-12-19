@@ -4,7 +4,6 @@ import { LandingPage } from "./components/LandingPage";
 
 import { ThemeProvider } from "@/components/theme-provider"
 import { RoomPage } from "./components/RoomPage";
-import { CrowdCard } from "./components/CrowdCard";
 
 function App() {
   return (
@@ -12,7 +11,6 @@ function App() {
     <Router>
         <Routes>
           <Route path="/" element={<LandingPage />}></Route>
-          <Route path="/landing" element={<CrowdCard />}></Route>
           <Route path="/room" element={<RoomPage />}></Route>
         </Routes>
       </Router>
