@@ -10,7 +10,7 @@ import { ComplexRoomView } from "./room_views/ComplexRoomView";
 import { SimpleRoomView } from "./room_views/SimpleRoomView";
 
 //* API & WS Imports
-import {socketConnect} from "../core/requests"
+import { WebSocketSingleton } from "../core/WebSocketSingleton"
 
 export function RoomPage() {
 
@@ -42,7 +42,8 @@ export function RoomPage() {
     };
 
     React.useEffect(() => {
-        socketConnect(rawQueryString);
+        const wsManager = WebSocketSingleton.getInstance();
+        wsManager.connect(rawQueryString);
       }, []);
 
     return (
