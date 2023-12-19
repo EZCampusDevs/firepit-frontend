@@ -5,7 +5,8 @@ const WS_PREFIX = 'ws' //!In production we'll change this to `wss`
 
 //* ------------------ Create of a Room ------------------
 
-export function newRoom(room_name, room_capacity, require_occupation) {
+export function newRoom(room_name, room_capacity, require_occupation,
+                        disp_nickname, disp_occup, disp_avatar_index) {
 
     //* ---- Room Creation Payload ---
     let payload = { room_name, room_capacity, require_occupation };
@@ -19,7 +20,7 @@ export function newRoom(room_name, room_capacity, require_occupation) {
     })
     .then(response => response.text())
     .then(roomId => {
-        socket_connect(roomId, "jay", "soft e.", 1);
+        socket_connect(roomId, disp_nickname, disp_occup, disp_avatar_index);
     })
     .catch(error => console.error('Error:', error));
 }
@@ -41,8 +42,15 @@ function socket_connect(roomId, displayName, displayOccupation, avatarIndexInt){
         ws.close();
     }
     console.log("Got room id from server " + roomId);
+    
+    const SOCKET_CONNECTION_STRING = `${WS_PREFIX}://${HOST}/websocket/?rid=${encodeURIComponent(roomId)}
+    &disp_name=${encodeURIComponent(displayName)}
+    &disp_occup=${encodeURIComponent(displayOccupation)}
+    &disp_avatar=${encodeURIComponent(avatarIndexInt)}`;
 
-    ws = new WebSocket(`${WS_PREFIX}://${HOST}/websocket/?rid=${roomId}&disp_name=${displayName}&disp_occup=${displayOccupation}&disp_avatar=${avatarIndexInt}`);
+    console.log(SOCKET_CONNECTION_STRING);
+
+    ws = new WebSocket(SOCKET_CONNECTION_STRING);
 
     ws.onopen = function (event) {
         console.log("websocket open");

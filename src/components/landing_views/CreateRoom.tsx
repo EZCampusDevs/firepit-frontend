@@ -36,56 +36,65 @@ export function CreateRoom() {
     setCallback(newValue);
   };
 
-    return (
-        <TabsContent value="create">
-          <Card>
-            <CardHeader>
-              <CardTitle>Name Your Room</CardTitle>
-              <div></div>
-              <Input type="text" 
-              ref={roomName}
-              placeholder="e.g., Firepit Marketting Strategy Session" sizeStyle={"h-12"} />
-              <br />
-              <CardTitle>Capacity Limit</CardTitle>
-              <CardDescription>Set the maximum number of participants allowed | Currently set to: {roomCapDisplay} persons.</CardDescription>
+  return (
+    <TabsContent value="create">
+      <Card>
+        <CardHeader>
+          <CardTitle>Name Your Room</CardTitle>
+          <div></div>
+          <Input type="text" 
+          ref={roomName}
+          placeholder="e.g., Firepit Marketting Strategy Session" sizeStyle={"h-12"} />
+          <br />
+          <CardTitle>Capacity Limit</CardTitle>
+          <CardDescription>Set the maximum number of participants allowed | Currently set to: {roomCapDisplay} persons.</CardDescription>
 
-              <Slider
-                defaultValue={[DEFAULT_ROOM_CAPACITY]}
-                max={100}
-                step={1}
-                onValueChange={(valueInt) => { setRoomCapDisplay(String(valueInt)) }}
-              />
-              <br/><br/>
-              <div className="items-top flex space-x-2">
-                <Checkbox id="terms1" onCheckedChange={(checked : any) => setOccupationMandate(checked)}/>
-                <div className="grid gap-1.5 leading-none">
-                  <label
-                    htmlFor="terms1"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Mandate Declaration of Professional Role
-                  </label>
-                  <p className="text-sm text-muted-foreground">
-                  This feature is highly recommended for organizations with specialized divisions, e.g., Finance, Accounting, IT. and Support, ensuring precise role identification.
-                  </p>
-                </div>
-              </div>
-
-            </CardHeader>
-            <hr />
-            <CardHeader>
-              <CardTitle>Create Your Profile</CardTitle>
-              <CardDescription>Select a unique nickname and choose your avatar.</CardDescription>
-            </CardHeader>
-
-            <div className="flex justify-center mb-4">
-              <CardAvatarCreate onAction={(value) => {
-                if(value == 200) {
-                  newRoom(roomName.current.value, parseInt(roomCapDisplay), occupationMandate);
-                }
-              }} requiredOccupation={true}/>
+          <Slider
+            defaultValue={[DEFAULT_ROOM_CAPACITY]}
+            max={100}
+            step={1}
+            onValueChange={(valueInt) => { setRoomCapDisplay(String(valueInt)) }}
+          />
+          <br/><br/>
+          <div className="items-top flex space-x-2">
+            <Checkbox id="terms1" onCheckedChange={(checked : any) => setOccupationMandate(checked)}/>
+            <div className="grid gap-1.5 leading-none">
+              <label
+                htmlFor="terms1"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Mandate Declaration of Professional Role
+              </label>
+              <p className="text-sm text-muted-foreground">
+              This feature is highly recommended for organizations with specialized divisions, e.g., Finance, Accounting, IT. and Support, ensuring precise role identification.
+              </p>
             </div>
-          </Card>
-        </TabsContent>
-    );
+          </div>
+
+        </CardHeader>
+        <hr />
+        <CardHeader>
+          <CardTitle>Create Your Profile</CardTitle>
+          <CardDescription>Select a unique nickname and choose your avatar.</CardDescription>
+        </CardHeader>
+
+        <div className="flex justify-center mb-4">
+          <CardAvatarCreate onAction={(value) => {
+
+            if(value[0] === true){ //* Successful Avatar Creation
+              
+              const avatarPayload = value[1];  //?  {nickname, avatar, department}
+              newRoom(roomName.current.value, parseInt(roomCapDisplay), occupationMandate,
+                    avatarPayload.nickname, avatarPayload.department, avatarPayload.avatar 
+              );
+
+            } else { //! Erroneous Message
+              const errorMessage = value[1];
+            }
+
+          }} requiredOccupation={true}/>
+        </div>
+      </Card>
+    </TabsContent>
+  );
 }

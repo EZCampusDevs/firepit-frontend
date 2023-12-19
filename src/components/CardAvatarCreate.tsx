@@ -47,9 +47,8 @@ export function CardAvatarCreate({ onAction, requiredOccupation }: CardAvatarCre
 
   const handleAvatarCreate = () => {
     const nickname = displayNameRef.current.value;
-    let avatar = selectedAvatar;
-    let department = selectedDepartment;
-
+    const avatar = selectedAvatar;
+    const department = selectedDepartment;
 
     //! ---- Assertions ----
     if (nickname.length < 3 || nickname.length > 32) {
