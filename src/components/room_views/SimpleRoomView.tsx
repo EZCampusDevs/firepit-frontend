@@ -1,19 +1,45 @@
+import React from "react";
 import { CrowdCard } from "../CrowdCard";
+import { useSelector } from 'react-redux';
 
 //* ------------ SIMPLE VIEW COMPONENT -----------------
 
 interface SimpleRoomViewProps {
-    Crowd: React.ReactNode[];
+    isCallerSpeaking: boolean; // If the user is speaking, this will be true
   }
 
 export function SimpleRoomView(props: SimpleRoomViewProps) {
-  const { Crowd } = props;
+  const { isCallerSpeaking } = props;
+
+  const [crowdJSX, setCrowdJSX] = React.useState([]);
+
+  const Crowd = useSelector((state : any) => state.room.crowd); //Only the Crowd (Non-Speakers)
+
+  const simpleCrowdBuilder = () => {
+
+      let crowdJSX = [];
+      for(const participant of Crowd){
+
+        crowdJSX.push(<CrowdCard 
+          displayName={participant.client_name}
+          displayOccupation={participant.client_occupation}
+          isCallerSpeaking={isCallerSpeaking} 
+          avatarIndex={1} />
+          );    
+      }
+
+      if(crowdJSX.length == 0){
+        crowdJSX.push(<p>Nobody has joined yet...</p>);
+      }
+
+      return crowdJSX;      
+  }
+
+  React.useEffect(() => {}, [Crowd]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl w-full px-4">
-          {Crowd ? 
-        Crowd.map((element, index) => <div key={index}>{element}</div>) : 
-        "No one is here"}
+      {simpleCrowdBuilder()}
     </div>
   )
 }

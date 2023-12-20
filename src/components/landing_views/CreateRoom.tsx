@@ -92,6 +92,7 @@ export function CreateRoom() {
 
             } else { //! Erroneous Message
               const errorMessage = value[1];
+              //TODO: update state with this
             }
 
           }}/>
