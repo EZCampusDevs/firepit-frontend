@@ -37,8 +37,22 @@ export const roomSlice = createSlice({
             },
 
             appendParticipant: (state,action) => {
-                state.room.room_members.push(action.payload.newcomer);
-                state.crowd.push(action.payload.newcomer);
+
+                const newcomer = action.payload.newcomer;
+                let incomingUniqueMember = false;
+
+                for(const participant of state.room.room_members) {
+                    if(participant.client_id === newcomer.client_id){
+                        incomingUniqueMember = true;
+                        return;
+                    }
+                }
+
+                if(!incomingUniqueMember) {
+                    state.room.room_members.push(action.payload.newcomer);
+                    state.crowd.push(action.payload.newcomer);
+                }
+
                 return;
             }
     }
