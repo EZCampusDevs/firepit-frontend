@@ -10,14 +10,7 @@ export const roomSlice = createSlice({
     name: 'room',
     initialState,
     reducers: {
-
-            splice_one: (state,action) => {
-                
-                console.log(action.payload);
-                console.log(state.participants);
-                
-            },
-
+        
             setRoom: (state,action) => {
                 
                 //* 1. Set all Participants of Room
@@ -48,16 +41,26 @@ export const roomSlice = createSlice({
                     }
                 }
 
+                //* Making sure Newcomer isn't already listed within the Room Members (Bug #2 quickfix)
                 if(!incomingUniqueMember) {
                     state.room.room_members.push(action.payload.newcomer);
                     state.crowd.push(action.payload.newcomer);
                 }
-
                 return;
+            },
+
+            removeParticipant: (state, action) => {
+                const departer = action.payload.departer;
+            
+                // Remove the departer from the room members
+                state.room.room_members = state.room.room_members.filter(participant => participant.client_id !== departer.client_id);
+                // Remove the departer from the crowd
+                state.crowd = state.crowd.filter(participant => participant.client_id !== departer.client_id);
             }
+            
     }
 })
 
-export const { splice_one, setRoom, appendParticipant } = roomSlice.actions;
+export const { setRoom, appendParticipant, removeParticipant } = roomSlice.actions;
 
 export default roomSlice.reducer;

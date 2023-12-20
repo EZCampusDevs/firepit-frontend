@@ -13,7 +13,7 @@ import { SimpleRoomView } from "./room_views/SimpleRoomView";
 
 // Redux Imports : 
 import { useSelector, useDispatch } from 'react-redux';
-import {spliceOne, setRoom, appendParticipant} from '../redux/features/roomSlice';
+import { setRoom, appendParticipant, removeParticipant} from '../redux/features/roomSlice';
 
 // @ts-expect-error | Javascript API & WS Imports :
 import { WebSocketSingleton } from "../core/WebSocketSingleton"
@@ -73,12 +73,19 @@ export function RoomPage() {
 
         }
 
-        //* PERSON JOINS ROOM | JSON-ified; Java Client Class
+        //* usr JOINS ROOM | JSON-ified; Java Client Class
         if(wsResponse.messageType === 50){
             const newcomer = wsResponse.client;
             dispatch(appendParticipant({ newcomer }));
             return 0;
-         }
+        }
+
+        //* usr LEAVES ROOM | JSON-ified; Java Client Class
+        if(wsResponse.messageType === 40){
+            const departer = wsResponse.client;
+            dispatch(removeParticipant({ departer }));
+            return 0;
+        }
 
         console.log("COMPONENT PRINT: ");
     }
@@ -86,19 +93,15 @@ export function RoomPage() {
 
     React.useEffect(() => {
 
-
         const REQ_SELF_STR = window.localStorage.getItem('requested_self');
 
         if(REQ_SELF_STR) {
-            //* Use WS Singleton instance, ensure's a global & singular definition of the Instance
+            //* Use of Singleton instance, ensure's a global & singular instance of class
             const wsManager = WebSocketSingleton.getInstance();
             wsManager.connect(REQ_SELF_STR, wsCallback);
 
             localStorage.removeItem("requested_self");
         }
-
-        //* Clear's URL Parameter state:
-        window.history.replaceState(null, '', window.location.pathname);
 
       }, []);
 
