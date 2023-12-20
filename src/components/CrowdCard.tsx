@@ -21,11 +21,14 @@ import {
 type CardProps = React.ComponentProps<typeof Card>
 
 interface CrowdCardProps {
+    displayName: string;
+    displayOccupation: string | null;
     isCallerSpeaking: boolean;
+    avatarIndex: number; //TODO: implement into component
 }
 
 export function CrowdCard(props: CrowdCardProps) {
-    const { isCallerSpeaking } = props;
+    const { displayName, displayOccupation, isCallerSpeaking } = props;
   return (
     <Card className={cn("w-[250px]", "")}>
 
@@ -36,8 +39,8 @@ export function CrowdCard(props: CrowdCardProps) {
         </Avatar>
         
         <div>
-            <CardTitle>Jason. M</CardTitle>
-            <CardDescription>Software Engineer</CardDescription>
+            <CardTitle>{displayName}</CardTitle>
+            <CardDescription>{displayOccupation}</CardDescription>
         </div>
     </CardHeader>
 
