@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 // UI Imports:
 import { Switch } from "@/components/ui/switch";
@@ -20,6 +20,7 @@ import { WebSocketSingleton } from "../core/WebSocketSingleton"
 import { RoomNavbar } from "./RoomNavbar";
 
 export function RoomPage() {
+    const { roomCode } = useParams();
 
     const Room = useSelector((state : any) => state.room.room); //Entire Room JSON
     const Crowd = useSelector((state : any) => state.room.crowd); //Only the Crowd (Non-Speakers)
@@ -32,9 +33,6 @@ export function RoomPage() {
 
     //* --- Simple View State Components ---
     const [simpleViewCrowd, setSimpleViewCrowd] = React.useState<React.ReactNode[]>([]);
-
-    //* --- URL Location Object from React-Router-DOM ---:
-    const location = useLocation();
 
     // Function to handle switch toggle
     const handleSwitchChange = () => {
@@ -76,7 +74,7 @@ export function RoomPage() {
         }
 
         //* PERSON JOINS ROOM | JSON-ified; Java Client Class
-        if(wsResponse.messageType === 40){
+        if(wsResponse.messageType === 50){
             const newcomer = wsResponse.client;
             dispatch(appendParticipant({ newcomer }));
             return 0;
@@ -88,15 +86,15 @@ export function RoomPage() {
 
     React.useEffect(() => {
 
-        const rawQueryString = location.search;
-        
-        console.log("RECIEVED QUERY STRING "+rawQueryString);
 
-        
-        if(rawQueryString) {
+        const REQ_SELF_STR = window.localStorage.getItem('requested_self');
+
+        if(REQ_SELF_STR) {
             //* Use WS Singleton instance, ensure's a global & singular definition of the Instance
             const wsManager = WebSocketSingleton.getInstance();
-            wsManager.connect(rawQueryString, wsCallback);
+            wsManager.connect(REQ_SELF_STR, wsCallback);
+
+            localStorage.removeItem("requested_self");
         }
 
         //* Clear's URL Parameter state:

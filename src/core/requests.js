@@ -23,20 +23,25 @@ export function newRoom( room_name, room_capacity, require_occupation,
   })
     .then((response) => response.text())
     .then((roomId) => {
-      roomStringEncodeAndAccess(roomId, disp_nickname, disp_occup, disp_avatar_index); 
+      
+      //* Setting ls `requested_slef` variable, then Redirecting to room
+      const URL_ENCODED_AVATAR_REQ = roomStringEncodeAndAccess(roomId, disp_nickname, disp_occup, disp_avatar_index); 
+      window.localStorage.setItem("requested_self", URL_ENCODED_AVATAR_REQ);
+      window.location.href = "/room/"+String(roomId);
+
     })
     .catch((error) => console.error("Error:", error));
 }
 
 export function roomStringEncodeAndAccess(roomId, displayName, displayOccupation, avatarIndexInt) {
     
-    const roomPayload = `/room/?rid=${encodeURIComponent(roomId.trim())}` +
+    const roomPayload = `?rid=${encodeURIComponent(roomId.trim())}` +
         `&disp_name=${encodeURIComponent(displayName.trim())}` +
         `&disp_occup=${encodeURIComponent(displayOccupation.trim())}` +
         `&disp_avatar=${encodeURIComponent(avatarIndexInt)}`;
 
-    window.location.href = roomPayload;
-    return 0;
+    return roomPayload;
+
 }
 
 export function onOpenRoomStringDecode(payload) {

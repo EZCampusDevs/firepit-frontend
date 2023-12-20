@@ -54,8 +54,11 @@ export function JoinRoom() {
               if (value[0] === true) { //* Successful Avatar Creation
 
                 const avatarPayload = value[1];  //?  {nickname, avatar, department}
-                roomStringEncodeAndAccess(roomCodeInput.current.value, avatarPayload.nickname, avatarPayload.department, avatarPayload.avatar );
-
+                
+                const URL_ENCODED_AVATAR_REQ = roomStringEncodeAndAccess(roomCodeInput.current.value, avatarPayload.nickname, avatarPayload.department, avatarPayload.avatar );
+                window.localStorage.setItem("requested_self", URL_ENCODED_AVATAR_REQ);
+                window.location.href = "/room/"+String(roomCodeInput.current.value);
+                
               } else { //! Erroneous Message
                 const errorMessage = value[1];
                 //TODO: update state with this

@@ -11,7 +11,7 @@ function App() {
     <Router>
         <Routes>
           <Route path="/" element={<LandingPage />}></Route>
-          <Route path="/room" element={<RoomPage />}></Route>
+          <Route path="/room/:roomCode" element={<RoomPage />}></Route>
         </Routes>
       </Router>
       </ThemeProvider>
