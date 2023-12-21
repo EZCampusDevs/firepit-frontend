@@ -9,6 +9,7 @@ pipeline {
                         sshPublisherDesc(configName: "${SSH_SERVER}", transfers: [
                             sshTransfer(
                                 cleanRemote: true, excludes: '', execCommand: '''
+cd ~/firepit_frontend
 chmod +x ./build.sh
 ./build.sh USE_LOG_FILE
 chmod +x ./deploy.sh
@@ -16,7 +17,7 @@ chmod +x ./deploy.sh
 ''', 
 execTimeout: 300000, flatten: false,
                                 makeEmptyDirs: true, noDefaultExcludes: false, patternSeparator: '[, ]+',
-                                remoteDirectory: 'frontend', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '**/*'
+                                remoteDirectory: 'firepit_frontend', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '**/*'
                             )
                         ],
                         usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)
