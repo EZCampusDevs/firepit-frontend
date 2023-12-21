@@ -44,6 +44,6 @@ done
 
 echo "Running build..."
 
-docker run -itd --rm -p 3000:80 --network EZnet --name "$CONTAINER_NAME" "$IMAGE_NAME"
+docker run -itd --rm -p 3030:80 --network EZnet --name "$CONTAINER_NAME" "$IMAGE_NAME"
 
 echo "Deploy done."
