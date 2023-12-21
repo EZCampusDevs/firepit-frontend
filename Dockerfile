@@ -25,3 +25,18 @@ RUN pnpm install vite
 
 RUN pnpm build
 
+#! --- Nginx stage to serve the built app
+FROM nginx:alpine
+
+# Copy Nginx configuration
+COPY nginx/default.conf /etc/nginx/conf.d/
+
+# Copy built app from the build stage
+COPY --from=build /app/dist/ /usr/share/nginx/html
+
+# Expose the port Nginx is listening on
+EXPOSE 80
+
+# Start Nginx server
+
+CMD ["nginx", "-g", "daemon off;"]
