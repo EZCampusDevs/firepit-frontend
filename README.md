@@ -55,4 +55,6 @@ Without cache *(Clean Image Build)*  <br/>
 `docker build --no-cache -t firepit_frontend_test -f ./Dockerfile .`
 
 Testing container that: -it & --rm *(Puts you into shell upon spin up, and upon exit, auto remove container!)* <br/>
-`docker run -it --rm --name temp_container firepit_frontend_test sh`
+`docker run -it --rm -p 8181:80 --name temp_container firepit_frontend_test
+`
+
