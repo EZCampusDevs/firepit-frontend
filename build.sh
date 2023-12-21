@@ -30,14 +30,12 @@ if [ $# != 0 ]; then
 fi
 
 
-if [ ! -d ./client ]; then
+# if [ ! -d ./client ]; then
 
-   echo './client directory does not exist, this contains the source code of the frontend!'
-   exit 1
+#    echo './client directory does not exist, this contains the source code of the frontend!'
+#    exit 1
 
-fi
-
-cd ./client
+# fi
 
 IMAGE_NAME="firepit_react_prod_img"
 
