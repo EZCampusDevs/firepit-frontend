@@ -43,3 +43,16 @@ Follow these steps to get started with the **Firepit Frontend**:
 - `pnpm build` - Builds the production-ready code.
 - `pnpm lint` - Runs ESLint to analyze and lint the code.
 - `pnpm preview` - Starts the Vite development server in preview mode.
+
+---
+
+# production setup
+
+Testing cmd for building docker image <br/>
+`docker build -t firepit_frontend_test -f ./Dockerfile .`
+
+Without cache *(Clean Image Build)*  <br/>
+`docker build --no-cache -t firepit_frontend_test -f ./Dockerfile .`
+
+Testing container that: -it & --rm *(Puts you into shell upon spin up, and upon exit, auto remove container!)* <br/>
+`docker run -it --rm --name temp_container firepit_frontend_test sh`
