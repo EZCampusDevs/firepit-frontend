@@ -30,7 +30,7 @@ if [ $# != 0 ]; then
 fi
 
 
-IMAGE_NAME="firepit_react_prod"
+IMAGE_NAME="firepit_react_prod_img"
 CONTAINER_NAME="firepit_react_prod"
 
 echo "Stopping container..."

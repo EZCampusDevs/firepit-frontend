@@ -39,6 +39,6 @@ fi
 
 cd ./client
 
-IMAGE_NAME="firepit_react_prod"
+IMAGE_NAME="firepit_react_prod_img"
 
 docker build -t "$IMAGE_NAME" -f ./Dockerfile .
