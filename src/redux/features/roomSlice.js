@@ -6,6 +6,25 @@ const initialState = {
     speaker: null
 }
 
+const rebuildRoomContext = (state, speakerUUID) => {
+
+    //* Clear Crowd & Speaker for fresh rebuild:
+    state.crowd = []; state.speaker = null;
+
+    //* 2. Define the Crowd (Non-speakers) & Speaker himself
+    for(const participant of state.room.room_members){
+                    
+        if(participant.client_id !== speakerUUID){
+            state.crowd.push(participant)
+        } else {
+            state.speaker = participant;
+        }
+
+    }
+
+}
+
+
 export const roomSlice = createSlice({
     name: 'room',
     initialState,
@@ -15,17 +34,14 @@ export const roomSlice = createSlice({
                 
                 //* 1. Set all Participants of Room
                 state.room = action.payload.room;
+                
+                //* 2. Build room context
+                rebuildRoomContext(state, state.room.room_speaker.client_id);
+                return;
+            },
 
-                //* 2. Define the Crowd (Non-speakers) & Speaker himself
-                for(const participant of state.room.room_members){
-                    
-                    if(participant.client_id !== state.room.room_speaker.client_id){
-                        state.crowd.push(participant)
-                    } else {
-                        state.speaker = participant;
-                    }
-
-                }
+            setSpeaker: (state,action) => {
+                rebuildRoomContext(state, action.payload.speaker_uuid);
                 return;
             },
 
@@ -61,6 +77,6 @@ export const roomSlice = createSlice({
     }
 })
 
-export const { setRoom, appendParticipant, removeParticipant } = roomSlice.actions;
+export const { setRoom, setSpeaker, appendParticipant, removeParticipant } = roomSlice.actions;
 
 export default roomSlice.reducer;

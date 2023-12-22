@@ -23,6 +23,7 @@ export function SimpleRoomView(props: SimpleRoomViewProps) {
         crowdJSX.push(<CrowdCard 
           displayName={participant.client_name}
           displayOccupation={participant.client_occupation}
+          clientUUID={participant.client_id}
           isCallerSpeaking={isCallerSpeaking} 
           avatarIndex={1} />
           );    
@@ -35,7 +36,8 @@ export function SimpleRoomView(props: SimpleRoomViewProps) {
       return crowdJSX;      
   }
 
-  React.useEffect(() => {}, [Crowd]);
+  //React was bugging me abt this being an Empty arrow fn... fml
+  React.useEffect(() => {console.log("")}, [Crowd]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl w-full px-4">

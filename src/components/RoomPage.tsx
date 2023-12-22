@@ -13,7 +13,7 @@ import { SimpleRoomView } from "./room_views/SimpleRoomView";
 
 // Redux Imports : 
 import { useSelector, useDispatch } from 'react-redux';
-import { setRoom, appendParticipant, removeParticipant} from '../redux/features/roomSlice';
+import { setRoom, setSpeaker, appendParticipant, removeParticipant} from '../redux/features/roomSlice';
 
 // @ts-expect-error | Javascript API & WS Imports :
 import { WebSocketSingleton } from "../core/WebSocketSingleton"
@@ -39,6 +39,25 @@ export function RoomPage() {
         setIsSimpleView(!isSimpleView);
     };
 
+    //* ------- CALLBACK FOR UPDATING SPEAKER STATE ------
+
+    const updateSpeaker = () => {
+                    //Getting Self
+                    let selfJSON = window.localStorage.getItem("self");
+                    if(selfJSON) { selfJSON = JSON.parse(selfJSON); }
+                    else { return 1; } //! If it's Null, return error
+        
+                    const SpeakerClientId = Room.room_speaker.client_id;
+        
+                    // @ts-expect-error | Check if Self is Speaking
+                    if(SpeakerClientId === selfJSON.client_id){
+                        setSelfSpeaking(true);
+                    } else {
+                        setSelfSpeaking(false);
+                    }
+    }
+
+
     const wsCallback = (wsResponse : any) => {
 
         //* WHO AM I MESSAGE | Let's the client know who they are.
@@ -52,24 +71,11 @@ export function RoomPage() {
         if(wsResponse.messageType === 60){ 
             const roomJSON = wsResponse.room;
             
-            //Getting Self
-            let selfJSON = window.localStorage.getItem("self");
-            if(selfJSON) { selfJSON = JSON.parse(selfJSON); }
-            else { return 1; } //! If it's Null, return error
-
-            const SpeakerClientId = roomJSON.room_speaker.client_id;
-
-            // @ts-expect-error | Check if Self is Speaking
-            if(SpeakerClientId === selfJSON.client_id){
-                setSelfSpeaking(true);
-            } else {
-                setSelfSpeaking(false);
-            }
-            
             
             dispatch(setRoom({
                 room: roomJSON
             }));
+
 
         }
 
@@ -87,7 +93,15 @@ export function RoomPage() {
             return 0;
         }
 
+        //* ----- ACTUAL ACTIONS -----
+        if(wsResponse.messageType === 30){
+            const speaker_uuid = wsResponse.speaker_id;
+            dispatch(setSpeaker({ speaker_uuid }));
+            return 0;
+        }
+
         console.log("COMPONENT PRINT: ");
+        console.log(wsResponse);
     }
 
 
@@ -104,6 +118,13 @@ export function RoomPage() {
         }
 
       }, []);
+
+      React.useEffect(() =>{
+        if(Room){
+            updateSpeaker();
+        }
+      }, [Room])
+
 
     return (
         <>

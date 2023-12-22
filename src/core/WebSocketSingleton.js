@@ -38,36 +38,31 @@ export class WebSocketSingleton {
     this.ws.onmessage = function (event) {
 
         const json = JSON.parse(event.data);
+        console.log(json);
         callback(json);
 
       if (!json) {
         return;
       }
 
-      console.log(json);
-
-      // room info message
-      if (json.messageType === 60) {
-        console.log("");
-      }
-
-      // client joins room
-      if (json.messageType === 50) {
-        console.log("");
-      }
-
-      // client leaves room
-      if (json.messageType === 40) {
-        console.log("");
-      }
-
-      // set speaker
-      if (json.messageType === 30) {
-        console.log("Setting speaker to " + json.speaker_id);
-      }
     };
 
     // Implement other event handlers (onerror, onclose) as needed
+  }
+
+  //* passingToUUID, I'm passing the stick to UUID:
+  setSpeaker(passingToUUID) {
+    
+    console.log("Trying to send Speaker Set MSG");
+
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify({
+          messageType: 30,
+          speaker_id: passingToUUID
+      }));
+  } else {
+      console.error("SET SPEAKER ERROR; WebSocket is not open.");
+  }
   }
 }
 

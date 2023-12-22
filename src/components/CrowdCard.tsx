@@ -18,17 +18,20 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar"
 
+import { WebSocketSingleton } from "../core/WebSocketSingleton"
+
 type CardProps = React.ComponentProps<typeof Card>
 
 interface CrowdCardProps {
     displayName: string;
     displayOccupation: string | null;
+    clientUUID: string;
     isCallerSpeaking: boolean;
     avatarIndex: number; //TODO: implement into component
 }
 
 export function CrowdCard(props: CrowdCardProps) {
-    const { displayName, displayOccupation, isCallerSpeaking } = props;
+    const { displayName, displayOccupation, isCallerSpeaking, clientUUID } = props;
   return (
     <Card className={cn("w-[250px]", "")}>
 
@@ -50,10 +53,14 @@ export function CrowdCard(props: CrowdCardProps) {
       </CardContent>
       <CardFooter>
         { isCallerSpeaking &&
-        <Button className="w-full">
+        <Button className="w-full" onClick={ () => {
+          const ws_inst = WebSocketSingleton.getInstance();
+          ws_inst.setSpeaker(clientUUID);
+          }
+        }>
           <Check className="mr-2 h-4 w-4" /> Pass the Stick
         </Button>
-}
+        }
       </CardFooter>
     </Card>
   )
