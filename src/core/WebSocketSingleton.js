@@ -19,7 +19,7 @@ export class WebSocketSingleton {
     this.ws = null;
     this.HTTP_HOST = "https://search.ezcampus.org/firepit";
     this.RAW_HOST = "search.ezcampus.org/firepit";
-    this.WS_PREFIX = "ws"; // In production, change this to `wss`
+    this.WS_PREFIX = "wss"; // In production, change this to `wss`
   }
 
   connect(SOCKET_CONNECTION_PAYLOAD, callback) {
