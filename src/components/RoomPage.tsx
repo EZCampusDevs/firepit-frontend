@@ -39,23 +39,6 @@ export function RoomPage() {
         setIsSimpleView(!isSimpleView);
     };
 
-    //* ------- CALLBACK FOR UPDATING SPEAKER STATE ------
-
-    const updateSpeaker = () => {
-                    //Getting Self
-                    let selfJSON = window.localStorage.getItem("self");
-                    if(selfJSON) { selfJSON = JSON.parse(selfJSON); }
-                    else { return 1; } //! If it's Null, return error
-        
-                    const SpeakerClientId = Room.room_speaker.client_id;
-        
-                    // @ts-expect-error | Check if Self is Speaking
-                    if(SpeakerClientId === selfJSON.client_id){
-                        setSelfSpeaking(true);
-                    } else {
-                        setSelfSpeaking(false);
-                    }
-    }
 
 
     const wsCallback = (wsResponse : any) => {
@@ -70,13 +53,7 @@ export function RoomPage() {
         //* ROOM PAYLOAD | JSON-ified; Java Room Class
         if(wsResponse.messageType === 60){ 
             const roomJSON = wsResponse.room;
-            
-            
-            dispatch(setRoom({
-                room: roomJSON
-            }));
-
-
+            dispatch(setRoom({ room: roomJSON }));
         }
 
         //* usr JOINS ROOM | JSON-ified; Java Client Class
@@ -104,6 +81,7 @@ export function RoomPage() {
         console.log(wsResponse);
     }
 
+//* ------ useEffect on Mount for WS Connection & Self Identification -----
 
     React.useEffect(() => {
 
@@ -116,15 +94,26 @@ export function RoomPage() {
 
             localStorage.removeItem("requested_self");
         }
-
       }, []);
 
-      React.useEffect(() =>{
-        if(Room){
-            updateSpeaker();
-        }
-      }, [Room])
+//* ----------- useEffect for UPDATING SPEAKER STATE ----------
 
+    React.useEffect(() => {
+
+        if(Speaker){
+            let selfJSON = window.localStorage.getItem("self");
+            if(selfJSON) { selfJSON = JSON.parse(selfJSON); }
+
+            const SpeakerClientId = Speaker.client_id;
+
+            // @ts-expect-error | Check if Self is Speaking
+            if(SpeakerClientId === selfJSON.client_id){
+                setSelfSpeaking(true);
+            } else {
+                setSelfSpeaking(false);
+            }
+        }
+      }, [Speaker]);
 
     return (
         <>
