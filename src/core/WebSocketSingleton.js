@@ -8,11 +8,18 @@ export class WebSocketSingleton {
     return WebSocketSingleton.instance;
   }
 
+  // constructor() {
+  //   this.ws = null;
+  //   this.HTTP_HOST = "http://localhost:8080/firepit";
+  //   this.RAW_HOST = "localhost:8080/firepit";
+  //   this.WS_PREFIX = "ws"; // In production, change this to `wss`
+  // }
+
   constructor() {
     this.ws = null;
-    this.HTTP_HOST = "http://localhost:8080/firepit";
-    this.RAW_HOST = "localhost:8080/firepit";
-    this.WS_PREFIX = "ws"; // In production, change this to `wss`
+    this.HTTP_HOST = "https://search.ezcampus.org/firepit";
+    this.RAW_HOST = "search.ezcampus.org/firepit";
+    this.WS_PREFIX = "wss"; // In production, change this to `wss`
   }
 
   connect(SOCKET_CONNECTION_PAYLOAD, callback) {
@@ -32,7 +39,12 @@ export class WebSocketSingleton {
 
     this.ws.onopen = () => {
       console.log("websocket open");
-      this.ws.send(this.getOKMessage());
+      
+      this.ws.send(
+        JSON.stringify({
+          messageType: 200,
+        }));
+
     };
 
     this.ws.onmessage = function (event) {

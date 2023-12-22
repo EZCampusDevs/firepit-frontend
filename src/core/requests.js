@@ -1,8 +1,6 @@
-let ws;
-const HTTP_HOST = "http://localhost:8080/firepit";
-const RAW_HOST = "localhost:8080/firepit";
 
-const WS_PREFIX = "ws"; //!In production we'll change this to `wss`
+//const HTTP_HOST = "http://localhost:8080/firepit";
+const HTTP_HOST = "https://search.ezcampus.org/firepit";
 
 // -------- Creation of a Room FUNCTION --------:
 //* 1. Make's the POST Request to Create a Room
@@ -42,11 +40,6 @@ export function roomStringEncodeAndAccess(roomId, displayName, displayOccupation
 
     return roomPayload;
 
-}
-
-export function onOpenRoomStringDecode(payload) {
-    //TODO:
-    return 0;
 }
 
 function getOKMessage() {
