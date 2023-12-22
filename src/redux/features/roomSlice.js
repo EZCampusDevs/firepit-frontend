@@ -24,7 +24,6 @@ const rebuildRoomContext = (state, speakerUUID) => {
 
 }
 
-
 export const roomSlice = createSlice({
     name: 'room',
     initialState,

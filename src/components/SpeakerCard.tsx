@@ -20,11 +20,47 @@ import {
     AvatarImage,
 } from "@/components/ui/avatar"
 
+// Redux Imports : 
+import { useSelector, useDispatch } from 'react-redux';
+
 type CardProps = React.ComponentProps<typeof Card>
 
 export function SpeakerCard({ className, ...props }: CardProps) {
 
     const [isWideScreen, setIsWideScreen] = React.useState(window.innerWidth > 768); // Example breakpoint
+    const [speakerCardContent, setSpeakerCardContent] = React.useState(<></>);
+
+    const Speaker = useSelector((state : any) => state.room.speaker); //Only the Crowd (Non-Speakers)
+
+    const speakerCardBuildJSX = () => {
+        
+        if(Speaker) {
+            setSpeakerCardContent(
+                <div>
+                <CardHeader className="grid grid-cols-[auto_minmax(0,1fr)] gap-4">
+                    <Avatar>
+                        <AvatarImage src={""} alt="avatar icon" />
+                        <AvatarFallback>{`1`}</AvatarFallback>
+                    </Avatar>
+
+                    <div>
+                        <CardTitle>{Speaker.client_name}</CardTitle>
+                        <CardDescription>{Speaker.client_occupation}</CardDescription>
+                    </div>
+                </CardHeader>
+
+
+                <CardFooter>
+                    Has been speaking for 21 minutes now.
+                </CardFooter>
+            </div>
+            );
+        }
+    }
+
+
+
+    //* ------ Dynamic Resizing & OnMount Effect -----
 
     React.useEffect(() => {
         const handleResize = () => {
@@ -37,30 +73,18 @@ export function SpeakerCard({ className, ...props }: CardProps) {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    //* ------ Dynamic Resizing & OnMount Effect -----
+    React.useEffect(() => {
+        speakerCardBuildJSX();
+    }, [Speaker]);
+
 
     return (
         <Card className={cn("w-full max-w-[270px] sm:max-w-[500px]", className)} {...props}>
 
             <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-4">
 
-                <div>
-                    <CardHeader className="grid grid-cols-[auto_minmax(0,1fr)] gap-4">
-                        <Avatar>
-                            <AvatarImage src={""} alt="avatar icon" />
-                            <AvatarFallback>{`1`}</AvatarFallback>
-                        </Avatar>
-
-                        <div>
-                            <CardTitle>Jason. M</CardTitle>
-                            <CardDescription>Software Engineer</CardDescription>
-                        </div>
-                    </CardHeader>
-
-
-                    <CardFooter>
-                        Has been speaking for 21 minutes now.
-                    </CardFooter>
-                </div>
+                {speakerCardContent}
 
                 {isWideScreen && <div className="self-center sm:ml-0">
                     <svg className="w-16 h-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
