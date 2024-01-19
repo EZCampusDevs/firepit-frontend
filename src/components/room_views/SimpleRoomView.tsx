@@ -23,6 +23,7 @@ export function SimpleRoomView(props: SimpleRoomViewProps) {
         crowdJSX.push(<CrowdCard 
           displayName={participant.client_name}
           displayOccupation={participant.client_occupation}
+          key={participant.client_id}
           clientUUID={participant.client_id}
           isCallerSpeaking={isCallerSpeaking} 
           avatarIndex={1} />

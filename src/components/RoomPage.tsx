@@ -46,34 +46,34 @@ export function RoomPage() {
 
         //* WHO AM I MESSAGE | Let's the client know who they are.
         if (wsResponse.messageType === 100) {
-            const selfJSON = wsResponse.client;
+            const selfJSON = wsResponse.payload.client;
             window.localStorage.setItem("self", JSON.stringify(selfJSON));
             return 0;
         }
 
         //* ROOM PAYLOAD | JSON-ified; Java Room Class
         if (wsResponse.messageType === 60) {
-            const roomJSON = wsResponse.room;
+            const roomJSON = wsResponse.payload.room;
             dispatch(setRoom({ room: roomJSON }));
         }
 
         //* usr JOINS ROOM | JSON-ified; Java Client Class
         if (wsResponse.messageType === 50) {
-            const newcomer = wsResponse.client;
+            const newcomer = wsResponse.payload.client;
             dispatch(appendParticipant({ newcomer }));
             return 0;
         }
 
         //* usr LEAVES ROOM | JSON-ified; Java Client Class
         if (wsResponse.messageType === 40) {
-            const departer = wsResponse.client;
+            const departer = wsResponse.payload.client;
             dispatch(removeParticipant({ departer }));
             return 0;
         }
 
         //* ----- ACTUAL ACTIONS -----
         if (wsResponse.messageType === 30) {
-            const speaker_uuid = wsResponse.speaker_id;
+            const speaker_uuid = wsResponse.payload.speaker_id;
             dispatch(setSpeaker({ speaker_uuid }));
             return 0;
         }

@@ -8,19 +8,19 @@ export class WebSocketSingleton {
     return WebSocketSingleton.instance;
   }
 
-  // constructor() {
-  //   this.ws = null;
-  //   this.HTTP_HOST = "http://localhost:8080/firepit";
-  //   this.RAW_HOST = "localhost:8080/firepit";
-  //   this.WS_PREFIX = "ws"; // In production, change this to `wss`
-  // }
-
   constructor() {
     this.ws = null;
-    this.HTTP_HOST = "https://search.ezcampus.org/firepit";
-    this.RAW_HOST = "search.ezcampus.org/firepit";
-    this.WS_PREFIX = "wss"; // In production, change this to `wss`
+    this.HTTP_HOST = "http://localhost:3000";
+    this.RAW_HOST = "localhost:3000";
+    this.WS_PREFIX = "ws"; // In production, change this to `wss`
   }
+
+  // constructor() {
+  //   this.ws = null;
+  //   this.HTTP_HOST = "https://search.ezcampus.org/firepit";
+  //   this.RAW_HOST = "search.ezcampus.org/firepit";
+  //   this.WS_PREFIX = "wss"; // In production, change this to `wss`
+  // }
 
   connect(SOCKET_CONNECTION_PAYLOAD, callback) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
@@ -32,10 +32,17 @@ export class WebSocketSingleton {
       this.ws.close();
     }
 
-    const SOCKET_CONNECTION_STRING = `${this.WS_PREFIX}://${this.RAW_HOST}/websocket/${SOCKET_CONNECTION_PAYLOAD}`;
+    const SOCKET_CONNECTION_STRING = `${this.WS_PREFIX}://${this.RAW_HOST}/ws${SOCKET_CONNECTION_PAYLOAD}`;
     console.log(SOCKET_CONNECTION_STRING);
 
     this.ws = new WebSocket(SOCKET_CONNECTION_STRING);
+
+    this.ws.onclose = () => {
+      console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+      setTimeout(function() {
+        connect(SOCKET_CONNECTION_PAYLOAD, callback);
+      }, 1000);
+    }
 
     this.ws.onopen = () => {
       console.log("websocket open");
