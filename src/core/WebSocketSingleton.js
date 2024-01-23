@@ -12,7 +12,6 @@ export class WebSocketSingleton {
   }
 
   constructor() {
-
       this.ws = null;
       this.HTTP_HOST = HTTP_HOST;
       this.RAW_HOST = RAW_HTTP_HOST;
