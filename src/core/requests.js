@@ -1,6 +1,5 @@
 
-const HTTP_HOST = "http://localhost:3000";
-//const HTTP_HOST = "https://search.ezcampus.org/firepit";
+import { HTTP_HOST } from "./Constants";
 
 // -------- Creation of a Room FUNCTION --------:
 //* 1. Make's the POST Request to Create a Room

@@ -1,3 +1,6 @@
+
+import { HTTP_HOST, RAW_HTTP_HOST } from "./Constants";
+
 export class WebSocketSingleton {
   static instance = null;
 
@@ -9,18 +12,12 @@ export class WebSocketSingleton {
   }
 
   constructor() {
-    this.ws = null;
-    this.HTTP_HOST = "http://localhost:3000";
-    this.RAW_HOST = "localhost:3000";
-    this.WS_PREFIX = "ws"; // In production, change this to `wss`
-  }
 
-  // constructor() {
-  //   this.ws = null;
-  //   this.HTTP_HOST = "https://search.ezcampus.org/firepit";
-  //   this.RAW_HOST = "search.ezcampus.org/firepit";
-  //   this.WS_PREFIX = "wss"; // In production, change this to `wss`
-  // }
+      this.ws = null;
+      this.HTTP_HOST = HTTP_HOST;
+      this.RAW_HOST = RAW_HTTP_HOST;
+      this.WS_PREFIX = "ws";
+  }
 
   connect(SOCKET_CONNECTION_PAYLOAD, callback) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
