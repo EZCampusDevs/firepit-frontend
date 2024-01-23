@@ -19,3 +19,5 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
 
 export const HTTP_HOST = _HTTP_HOST;
 export const RAW_HTTP_HOST = _RAW_HTTP_HOST;
+
+export const LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY = "requested_self";

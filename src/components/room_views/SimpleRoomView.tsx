@@ -31,7 +31,7 @@ export function SimpleRoomView(props: SimpleRoomViewProps) {
       }
 
       if(crowdJSX.length == 0){
-        crowdJSX.push(<p>Nobody has joined yet...</p>);
+        crowdJSX.push(<p key="_0">Nobody has joined yet...</p>);
       }
 
       return crowdJSX;      

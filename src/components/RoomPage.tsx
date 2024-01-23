@@ -17,7 +17,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setRoom, setSpeaker, appendParticipant, removeParticipant } from '../redux/features/roomSlice';
 
 // @ts-expect-error | Javascript API & WS Imports :
-import { WebSocketSingleton } from "../core/WebSocketSingleton"
+import { WebSocketSingleton } from "../core/WebSocketSingleton";
+import { LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY } from "../core/Constants";
 import { RoomNavbar } from "./RoomNavbar";
 
 export function RoomPage() {
@@ -86,15 +87,17 @@ export function RoomPage() {
 
     React.useEffect(() => {
 
-        const REQ_SELF_STR = window.localStorage.getItem('requested_self');
+        const REQ_SELF_STR = window.localStorage.getItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
 
         if (REQ_SELF_STR) {
             //* Use of Singleton instance, ensure's a global & singular instance of class
             const wsManager = WebSocketSingleton.getInstance();
             wsManager.connect(REQ_SELF_STR, wsCallback);
 
-            localStorage.removeItem("requested_self");
+            localStorage.removeItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
         }
+
+
     }, []);
 
     //* ----------- useEffect for UPDATING SPEAKER STATE ----------

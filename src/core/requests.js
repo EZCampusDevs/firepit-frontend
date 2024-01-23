@@ -1,5 +1,5 @@
 
-import { HTTP_HOST } from "./Constants";
+import { HTTP_HOST, LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY } from "./Constants";
 
 // -------- Creation of a Room FUNCTION --------:
 //* 1. Make's the POST Request to Create a Room
@@ -19,7 +19,7 @@ export function newRoom( room_name, room_capacity, require_occupation,
       
       //* Setting ls `requested_slef` variable, then Redirecting to room
       const URL_ENCODED_AVATAR_REQ = roomStringEncodeAndAccess(roomId, disp_nickname, disp_occup, disp_avatar_index); 
-      window.localStorage.setItem("requested_self", URL_ENCODED_AVATAR_REQ);
+      window.localStorage.setItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY, URL_ENCODED_AVATAR_REQ);
       window.location.href = "/room/"+String(roomId);
 
     })

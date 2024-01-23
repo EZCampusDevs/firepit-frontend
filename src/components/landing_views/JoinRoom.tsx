@@ -19,6 +19,7 @@ import {
 import { CardAvatarCreate } from "../CardAvatarCreate"
 
 import { roomStringEncodeAndAccess } from "../../core/requests"
+import { LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY } from "../../core/Constants"
 
 export function JoinRoom() {
   //* ------ Join Room State(s) & Constants ------
@@ -56,7 +57,7 @@ export function JoinRoom() {
                 const avatarPayload = value[1];  //?  {nickname, avatar, department}
                 
                 const URL_ENCODED_AVATAR_REQ = roomStringEncodeAndAccess(roomCodeInput.current.value, avatarPayload.nickname, avatarPayload.department, avatarPayload.avatar );
-                window.localStorage.setItem("requested_self", URL_ENCODED_AVATAR_REQ);
+                window.localStorage.setItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY, URL_ENCODED_AVATAR_REQ);
                 window.location.href = "/room/"+String(roomCodeInput.current.value);
                 
               } else { //! Erroneous Message
