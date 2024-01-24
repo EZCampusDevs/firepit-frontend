@@ -33,13 +33,6 @@ export class WebSocketSingleton {
 
     this.ws = new WebSocket(SOCKET_CONNECTION_STRING);
 
-    this.ws.onclose = (e) => {
-      console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-      setTimeout(function() {
-        connect(SOCKET_CONNECTION_PAYLOAD, callback);
-      }, 1000);
-    }
-
     this.ws.onopen = () => {
       console.log("websocket open");
     };
