@@ -15,7 +15,7 @@ export class WebSocketSingleton {
       this.ws = null;
       this.HTTP_HOST = HTTP_HOST;
       this.RAW_HOST = RAW_HTTP_HOST;
-      this.WS_PREFIX = "ws";
+      this.WS_PREFIX = "wss";
   }
 
   connect(SOCKET_CONNECTION_PAYLOAD, callback) {
