@@ -1,5 +1,5 @@
 
-import { HTTP_HOST, RAW_HTTP_HOST } from "./Constants";
+import { HTTP_HOST, RAW_HTTP_HOST, WEBSOCKET_PROT } from "./Constants";
 
 export class WebSocketSingleton {
   static instance = null;
@@ -15,7 +15,7 @@ export class WebSocketSingleton {
       this.ws = null;
       this.HTTP_HOST = HTTP_HOST;
       this.RAW_HOST = RAW_HTTP_HOST;
-      this.WS_PREFIX = "wss";
+      this.WS_PREFIX = WEBSOCKET_PROT;
   }
 
   connect(SOCKET_CONNECTION_PAYLOAD, callback) {
@@ -61,17 +61,21 @@ export class WebSocketSingleton {
 
   //* passingToUUID, I'm passing the stick to UUID:
   setSpeaker(passingToUUID) {
-    
+
     console.log("Trying to send Speaker Set MSG");
 
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+
       this.ws.send(JSON.stringify({
-          messageType: 30,
+        messageType: 30,
+        payload: {
           speaker_id: passingToUUID
+        }
       }));
-  } else {
+
+    } else {
       console.error("SET SPEAKER ERROR; WebSocket is not open.");
-  }
+    }
   }
 }
 

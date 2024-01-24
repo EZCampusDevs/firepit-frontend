@@ -56,6 +56,7 @@ export function RoomPage() {
         if (wsResponse.messageType === 60) {
             const roomJSON = wsResponse.payload.room;
             dispatch(setRoom({ room: roomJSON }));
+            return 0;
         }
 
         //* usr JOINS ROOM | JSON-ified; Java Client Class
@@ -104,19 +105,29 @@ export function RoomPage() {
 
     React.useEffect(() => {
 
-        if (Speaker) {
-            let selfJSON = window.localStorage.getItem("self");
-            if (selfJSON) { selfJSON = JSON.parse(selfJSON); }
-
-            const SpeakerClientId = Speaker.client_id;
-
-            // @ts-expect-error | Check if Self is Speaking
-            if (SpeakerClientId === selfJSON.client_id) {
-                setSelfSpeaking(true);
-            } else {
-                setSelfSpeaking(false);
-            }
+        if (!Speaker) {
+            return;
         }
+
+        let selfJSON = window.localStorage.getItem("self");
+
+        if (!selfJSON) { 
+            console.log("Could not find local storage item");
+            setSelfSpeaking(false);
+            return;
+        }
+
+        const thisClient = JSON.parse(selfJSON); 
+        const SpeakerClientId = Speaker.client_id;
+
+        console.log(`New speaker id = ${SpeakerClientId}, My ID = ${thisClient.client_id}`)
+
+        if (SpeakerClientId === thisClient.client_id) {
+            setSelfSpeaking(true);
+        } else {
+            setSelfSpeaking(false);
+        }
+
     }, [Speaker]);
 
 
