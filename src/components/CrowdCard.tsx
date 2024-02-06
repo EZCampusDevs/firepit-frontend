@@ -28,14 +28,19 @@ interface CrowdCardProps {
     clientUUID: string;
     isCallerSpeaking: boolean;
     avatarIndex: number; //TODO: implement into component
+    VISUAL_rotation : string;
+    VISUAL_top_margin: number;
 }
 
 export function CrowdCard(props: CrowdCardProps) {
-    const { displayName, displayOccupation, isCallerSpeaking, clientUUID } = props;
-  return (
-    <Card className={cn("w-[250px]", "")}>
+    const { displayName, displayOccupation, isCallerSpeaking, clientUUID, VISUAL_top_margin, VISUAL_rotation } = props;
+  
 
-    <CardHeader className="grid grid-cols-[auto_minmax(0,1fr)] gap-4">
+  return (
+<Card className="w-[120px]" style={{ transform: `rotate(${VISUAL_rotation}deg)`, marginTop: `${VISUAL_top_margin}em` }}>
+
+    {/* <CardHeader className="grid grid-cols-[auto_minmax(0,1fr)] gap-4"> */}
+    <CardHeader>
         <Avatar>
             <AvatarImage src={""} alt="avatar icon" />
             <AvatarFallback>{`1`}</AvatarFallback>
