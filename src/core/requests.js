@@ -43,4 +43,21 @@ function getOKMessage() {
   });
 }
 
-  
+export async function getRngQuote(callback) {
+  try {
+    const response = await fetch(`${HTTP_HOST}/quote`, {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    callback(data.quote); // Call the callback with the quote
+  } catch (error) {
+    console.error("Error fetching quote:", error);
+    callback("Failed to load quote."); // Call the callback with error message
+  }
+}

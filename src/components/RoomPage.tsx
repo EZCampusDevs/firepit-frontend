@@ -87,6 +87,8 @@ export function RoomPage() {
     //* ------ useEffect on Mount for WS Connection & Self Identification -----
 
     React.useEffect(() => {
+        
+        const uuid = crypto.randomUUID();
 
         const REQ_SELF_STR = window.localStorage.getItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
 
