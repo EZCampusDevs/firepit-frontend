@@ -18,7 +18,7 @@ import { setRoom, setSpeaker, appendParticipant, removeParticipant } from '../re
 
 // @ts-expect-error | Javascript API & WS Imports :
 import { WebSocketSingleton } from "../core/WebSocketSingleton";
-import { LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY } from "../core/Constants";
+import { LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY, HTTP_HOST } from "../core/Constants";
 import { RoomNavbar } from "./RoomNavbar";
 
 export function RoomPage() {
@@ -160,9 +160,29 @@ export function RoomPage() {
         }
     };
 
+    function leaveTheRoom() {
+
+        localStorage.removeItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
+
+        window.location.href = "/";
+    }
+
     return (
         <>
-            <div className="flex flex-col justify-center items-center w-full">
+
+            <div>
+                <Button className="ml-2" onClick={ leaveTheRoom }>
+                    Leave Room
+                </Button>
+            </div>
+
+            <div className="flex flex-col justify-center items-center w-full" 
+                 style={{ 
+                    // TODO: make this test.jpg dynamic based on the theme
+                    backgroundImage: `url(${HTTP_HOST}/static/test.jpg)`,
+                    height: "100vh"
+                 }
+                 }>
 
                 <h1 className="mt-16 mb-2 text-4xl font-extrabold tracking-tight lg:text-5xl sm:text-lg">
                     {selfSpeaking ? "It's your turn to speak !" : "Mute & Listen to the speaker..."}
