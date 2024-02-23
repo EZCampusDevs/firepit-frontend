@@ -70,5 +70,35 @@ export class WebSocketSingleton {
       console.error("SET SPEAKER ERROR; WebSocket is not open.");
     }
   }
+
+  disconnect() {
+    if (this.ws) {
+      console.log("Disconnecting WebSocket...");
+      
+      // Close the WebSocket if it's open or in the process of opening
+      if (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING) {
+        this.ws.close();
+      }
+  
+      // Optionally: Handle any cleanup actions after WebSocket is closed
+      // This could involve resetting instance variables or executing any callback functions
+      this.ws.onclose = () => {
+        console.log("WebSocket disconnected.");
+        // Reset the WebSocket instance to null to ensure the singleton can establish a new connection later
+        this.ws = null;
+      };
+  
+      // If there's a need to handle errors (optional but recommended)
+      this.ws.onerror = (error) => {
+        console.error("WebSocket encountered an error: ", error);
+        // Ensure WebSocket is closed if an error occurs
+        this.ws.close();
+      };
+    } else {
+      console.log("No active WebSocket connection to disconnect.");
+    }
+  }
+
 }
+
 

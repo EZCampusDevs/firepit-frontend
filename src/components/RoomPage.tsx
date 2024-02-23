@@ -52,11 +52,13 @@ export function RoomPage() {
         if (wsResponse.messageType === 100) {
 
             const REQ_SELF_STR = window.localStorage.getItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
+            window.localStorage.removeItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
             
 
             const TabID = {
                 room_query: REQ_SELF_STR, 
-                payload: wsResponse.payload
+                payload: wsResponse.payload,
+                active: true
             }
 
             //Add Tab ID to LS
@@ -98,6 +100,12 @@ export function RoomPage() {
         console.log(wsResponse);
     }
 
+    function leaveTheRoom() {
+        window.localStorage.removeItem(cryptoUUID);
+        window.location.href = "/";
+    }
+
+
     //* ------ useEffect on Mount for WS Connection & Self Identification -----
 
     React.useEffect(() => {
@@ -110,8 +118,76 @@ export function RoomPage() {
             const wsManager = WebSocketSingleton.getInstance();
             wsManager.connect(REQ_SELF_STR, wsCallback);
 
-            window.localStorage.removeItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
+
+        }  else { //**** Reconnection Assertion in ELSE STMT */    
+
+
+            const wsManager = WebSocketSingleton.getInstance();
+
+
+            // Object.keys(window.localStorage).forEach((key) => {
+                
+                
+            //     if (key.length <= 25) {
+            //         return; // Skip this key and move to the next one
+            //     }
+
+            //     let item;
+
+            //     try {
+            //         item = JSON.parse(window.localStorage.getItem(key));
+            //     } catch (error) {
+            //         console.error(`Error parsing localStorage item with key "${key}":`, error);
+            //         return; // If parsing fails, skip this iteration
+            //     }
+
+            //     console.log(item);
+
+            //     const QUERY_STR = item.room_query; // Example query string
+            //     const match = QUERY_STR.match(/[\?&]rid=([^&#]*)/); // Use regex to find 'rid' value
+            //     const extractedRoomCode = match ? match[1] : null; // Extract 'rid' value or null if not found
+    
+            //     console.log(extractedRoomCode); // Room Code
             
+            //     // Proceed with items that successfully parsed as JSON
+            //     // if (item && extractedRoomCode && extractedRoomCode === roomCode) {
+            //     //     console.log("Found a matching inactive item with room code:", roomCode);
+                    
+            //     //     const RECON_STR = QUERY_STR+"&rtoken="+item.payload.reconnection_token;
+
+            //     //     //* Use of Singleton instance, ensure's a global & singular instance of class
+            //     //     const wsManager = WebSocketSingleton.getInstance();
+            //     //     wsManager.connect(RECON_STR, wsCallback);
+
+            //     //     window.localStorage.removeItem(key);
+
+            //     // }
+            // });
+            
+        }
+
+        const markUserInactive_B4_UNLOAD = (e: any) => {
+
+            const wsManager = WebSocketSingleton.getInstance();
+            
+            const tabObjStr = window.localStorage.getItem(cryptoUUID);
+            if (tabObjStr) {
+                try {
+                    const tabObject = JSON.parse(tabObjStr);
+                    tabObject.active = false; // Mark as inactive
+                    window.localStorage.setItem(cryptoUUID, JSON.stringify(tabObject)); // Update localStorage
+                } catch (error) {
+                    console.error("Error updating localStorage item on tab close:", error);
+                }
+            }
+            wsManager.disconnect();
+            // Note: Direct interactions like `e.preventDefault()` will not work in modern browsers for `beforeunload`.
+        };
+
+        window.addEventListener('beforeunload', markUserInactive_B4_UNLOAD);
+
+        return () => {
+            window.removeEventListener('beforeunload', markUserInactive_B4_UNLOAD);
         }
 
     }, []);
@@ -178,12 +254,7 @@ export function RoomPage() {
         }
     };
 
-    function leaveTheRoom() {
 
-
-        window.localStorage.removeItem(cryptoUUID);
-        window.location.href = "/";
-    }
 
     return (
         <>
