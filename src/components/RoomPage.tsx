@@ -33,6 +33,9 @@ export function RoomPage() {
     const [isSimpleView, setIsSimpleView] = React.useState(false);
     const [selfSpeaking, setSelfSpeaking] = React.useState(false); //* Am I (self) speaking right now?
 
+    // Initialize cryptoUUID only once when the component mounts
+    const [cryptoUUID] = React.useState(() => crypto.randomUUID());
+
     //* --- Simple View State Components ---
     const [simpleViewCrowd, setSimpleViewCrowd] = React.useState<React.ReactNode[]>([]);
 
@@ -47,8 +50,19 @@ export function RoomPage() {
 
         //* WHO AM I MESSAGE | Let's the client know who they are.
         if (wsResponse.messageType === 100) {
-            const selfJSON = wsResponse.payload.client;
-            window.localStorage.setItem("self", JSON.stringify(selfJSON));
+
+            const REQ_SELF_STR = window.localStorage.getItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
+            
+
+            const TabID = {
+                room_query: REQ_SELF_STR, 
+                payload: wsResponse.payload
+            }
+
+            //Add Tab ID to LS
+            window.localStorage.setItem(cryptoUUID, JSON.stringify(TabID));
+
+
             return 0;
         }
 
@@ -88,7 +102,6 @@ export function RoomPage() {
 
     React.useEffect(() => {
         
-        const uuid = crypto.randomUUID();
 
         const REQ_SELF_STR = window.localStorage.getItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
 
@@ -97,9 +110,9 @@ export function RoomPage() {
             const wsManager = WebSocketSingleton.getInstance();
             wsManager.connect(REQ_SELF_STR, wsCallback);
 
-            localStorage.removeItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
+            window.localStorage.removeItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
+            
         }
-
 
     }, []);
 
@@ -111,15 +124,18 @@ export function RoomPage() {
             return;
         }
 
-        let selfJSON = window.localStorage.getItem("self");
+        const tabObjStr = window.localStorage.getItem(cryptoUUID);
 
-        if (!selfJSON) { 
-            console.log("Could not find local storage item");
+        if (!tabObjStr) { 
+            console.log(`[debug] Couldn't find LS item... TSTR: ${tabObjStr} , CID: ${cryptoUUID}`);
+
             setSelfSpeaking(false);
             return;
         }
 
-        const thisClient = JSON.parse(selfJSON); 
+        const tabObject = JSON.parse(tabObjStr);
+
+        const thisClient = tabObject.payload.client; 
         const SpeakerClientId = Speaker.client_id;
 
         console.log(`New speaker id = ${SpeakerClientId}, My ID = ${thisClient.client_id}`)
@@ -164,8 +180,8 @@ export function RoomPage() {
 
     function leaveTheRoom() {
 
-        localStorage.removeItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY);
 
+        window.localStorage.removeItem(cryptoUUID);
         window.location.href = "/";
     }
 

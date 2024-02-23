@@ -57,6 +57,7 @@ export function JoinRoom() {
                 const avatarPayload = value[1];  //?  {nickname, avatar, department}
                 
                 const URL_ENCODED_AVATAR_REQ = roomStringEncodeAndAccess(roomCodeInput.current.value, avatarPayload.nickname, avatarPayload.department, avatarPayload.avatar );
+                console.log("*** JOIN_ROOM_QUERY_KEY: "+URL_ENCODED_AVATAR_REQ);
                 window.localStorage.setItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY, URL_ENCODED_AVATAR_REQ);
                 window.location.href = "/room/"+String(roomCodeInput.current.value);
                 
