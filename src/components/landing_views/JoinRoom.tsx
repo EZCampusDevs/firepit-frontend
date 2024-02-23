@@ -8,6 +8,15 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+import { AlertTriangle } from "lucide-react"
+ 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+
+
 import { Input } from "@/components/ui/input"
 
 import {
@@ -20,9 +29,17 @@ import { CardAvatarCreate } from "../CardAvatarCreate"
 
 import { roomStringEncodeAndAccess } from "../../core/requests"
 import { LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY } from "../../core/Constants"
+import { assertJoinRoom } from "../../core/assert"
+ 
+import { ErrorAlert } from "../ErrorAlert"
+
 
 export function JoinRoom() {
   //* ------ Join Room State(s) & Constants ------
+  
+  const [errMsg, setErrMsg] = React.useState("");
+
+  const REQ_OCCUP = false;
 
   const roomCodeInput = React.useRef('');
 
@@ -52,25 +69,46 @@ export function JoinRoom() {
           <CardAvatarCreate
             onAction={(value) => {
 
-              if (value[0] === true) { //* Successful Avatar Creation
+              if (value[0] === true) { //* Signal for Join Room & Avatar crea:
+                console.log("?");
 
-                const avatarPayload = value[1];  //?  {nickname, avatar, department}
+                const nickname = value[1];  //?  {nickname, avatar, department}
+                const avatar = value[2];
+                const department = value[3];
+
+                const roomCode = roomCodeInput.current.value;
+
+
+                let assertTup = assertJoinRoom(nickname, avatar, department, REQ_OCCUP, roomCode)
                 
-                const URL_ENCODED_AVATAR_REQ = roomStringEncodeAndAccess(roomCodeInput.current.value, avatarPayload.nickname, avatarPayload.department, avatarPayload.avatar );
-                console.log("*** JOIN_ROOM_QUERY_KEY: "+URL_ENCODED_AVATAR_REQ);
-                window.localStorage.setItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY, URL_ENCODED_AVATAR_REQ);
-                window.location.href = "/room/"+String(roomCodeInput.current.value);
-                
-              } else { //! Erroneous Message
-                const errorMessage = value[1];
-                //TODO: update state with this
+                if(assertTup[0] === true) {
+
+                  const URL_ENCODED_AVATAR_REQ = roomStringEncodeAndAccess(roomCode, nickname, department, avatar);
+
+                  console.log("*** JOIN_ROOM_QUERY_KEY: "+URL_ENCODED_AVATAR_REQ);
+
+                  window.localStorage.setItem(LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY, URL_ENCODED_AVATAR_REQ);
+                  window.location.href = "/room/"+String(roomCode);
+                  
+                } else { //! Erroneous Message
+                  const errorMessage = assertTup[1];
+                  console.log("ERM: "+errorMessage);
+                  setErrMsg(errorMessage);
+                }
+
               }
-
             }}
-            requiredOccupation={true} />
+
+            requireOccupation={REQ_OCCUP}
+            />
+
         </div>
 
+        <ErrorAlert error_msg={errMsg}/>
+
+
       </Card>
+
     </TabsContent>
   );
 }

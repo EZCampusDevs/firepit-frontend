@@ -30,10 +30,10 @@ import { Toggle } from "@/components/ui/toggle"
 
 interface CardAvatarCreateProps {
   onAction: (value: any) => void;
-  requiredOccupation: boolean;
+  requireOccupation : boolean;
 }
 
-export function CardAvatarCreate({ onAction, requiredOccupation }: CardAvatarCreateProps) {
+export function CardAvatarCreate({ onAction, requireOccupation }: CardAvatarCreateProps) {
 
   //* ------------------- Generic React State ------------------------
 
@@ -41,36 +41,6 @@ export function CardAvatarCreate({ onAction, requiredOccupation }: CardAvatarCre
   const [selectedAvatar, setSelectedAvatar] = React.useState(-1);
   const [selectedDepartment, setSelectedDepartment] = React.useState('');
 
-
-  //This function will return either the data needed for Avatar Creation, or an error with error msg
-  //* [ Success_Status, Payload ]
-
-  const handleAvatarCreate = () => {
-    const nickname = displayNameRef.current.value;
-    const avatar = selectedAvatar;
-    const department = selectedDepartment;
-
-    //! ---- Assertions ----
-    if (nickname.length < 3 || nickname.length > 32) {
-      onAction([false, "Nickname must be between 3 and 32 characters"]);
-      return;
-    }
-
-    if (!Number.isInteger(avatar)) {
-      onAction([false, "Avatar selection was invalid"]);
-      return;
-    }
-
-    if (requiredOccupation && (!department || department.trim() === "")) {
-      onAction([false, "Selected department cannot be blank"]);
-      return;
-    }
-
-    //* Passed all Assertions, Successful Case:
-
-    onAction([true, { nickname, avatar, department }]);
-    return;
-  }
 
 
   const avatarImgs = [
@@ -98,7 +68,7 @@ export function CardAvatarCreate({ onAction, requiredOccupation }: CardAvatarCre
             <Input id="name" placeholder="Enter nickname" ref={displayNameRef} />
           </div>
 
-          {requiredOccupation &&
+          {requireOccupation &&
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="occupation">Department:</Label>
 
@@ -158,7 +128,9 @@ export function CardAvatarCreate({ onAction, requiredOccupation }: CardAvatarCre
           setSelectedDepartment('');
         }}>Clear</Button>
 
-        <Button onClick={() => { handleAvatarCreate() }}>Join Room</Button>
+        <Button onClick={()=>{onAction([true, displayNameRef.current.value, selectedAvatar, selectedDepartment
+      ])
+      }}>Join Room</Button> 
       </CardFooter>
     </Card>
   );

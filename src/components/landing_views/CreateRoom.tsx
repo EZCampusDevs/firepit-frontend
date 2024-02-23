@@ -21,8 +21,15 @@ import {
 import { Slider } from "@/components/ui/slider"
 
 import { newRoom } from "../../core/requests" //TODO: remove and put into landing pg
+import { assertCreateRoom } from "../../core/assert"
+
+import { ErrorAlert } from "../ErrorAlert"
+
 
 export function CreateRoom() {
+
+  const [errMsg, setErrMsg] = React.useState("");
+
 
     //* ------------ Create Room State & Constants ----------------
   const DEFAULT_ROOM_CAPACITY = 25;
@@ -80,23 +87,35 @@ export function CreateRoom() {
 
         <div className="flex justify-center mb-4">
           <CardAvatarCreate 
-          requiredOccupation={occupationMandate}
           onAction={(value) => {
 
             if(value[0] === true){ //* Successful Avatar Creation
-              
-              const avatarPayload = value[1];  //?  {nickname, avatar, department}
-              newRoom(roomName.current.value, parseInt(roomCapDisplay), occupationMandate,
-                    avatarPayload.nickname, avatarPayload.department, avatarPayload.avatar 
-              );
+              console.log("?");
 
+              const nickname = value[1];  //?  {nickname, avatar, department}
+              const avatar = value[2];
+              const department = value[3];
+
+              const roomNameStr = roomName.current.value;
+
+              let assertTup = assertCreateRoom(nickname, avatar, department, occupationMandate, roomNameStr);
+
+            if(assertTup[0] === true) {
+              newRoom(roomNameStr, parseInt(roomCapDisplay), occupationMandate, nickname, department, avatar);
             } else { //! Erroneous Message
-              const errorMessage = value[1];
-              //TODO: update state with this
+              const errorMessage = assertTup[1];
+              console.log("ERM: "+errorMessage);
+              setErrMsg(errorMessage);
             }
+          }
 
-          }}/>
+          }}
+          requireOccupation={occupationMandate}
+          />
         </div>
+
+        <ErrorAlert error_msg={errMsg}/>
+
       </Card>
     </TabsContent>
   );
