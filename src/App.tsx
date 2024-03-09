@@ -4,8 +4,8 @@ import { LandingPage } from "./components/LandingPage";
 
 import { ThemeProvider } from "@/components/theme-provider"
 
-import { RoomPage } from "./components/RoomPage";
-//import { IndigenousRoomPage as RoomPage } from "./components/IndigenousRoomPage";
+//import { RoomPage } from "./components/RoomPage";
+import { IndigenousRoomPage as RoomPage } from "./components/IndigenousRoomPage";
 
 
 function App() {

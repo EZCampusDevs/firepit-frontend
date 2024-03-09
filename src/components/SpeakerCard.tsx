@@ -80,7 +80,7 @@ export function SpeakerCard({ className, ...props }: CardProps) {
 
 
     return (
-        <Card className={cn("w-full max-w-[270px] sm:max-w-[500px]", className)} {...props}>
+        <Card className={"w-[300px]"} {...props}>
 
             <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-4">
 
