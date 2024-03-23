@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { LandingPage } from "./components/LandingPage";
+import { TestPage } from "./components/TestPage";
 
 import { ThemeProvider } from "@/components/theme-provider"
 
@@ -14,6 +15,7 @@ function App() {
     <Router>
         <Routes>
           <Route path="/" element={<LandingPage />}></Route>
+          <Route path="/test" element={<TestPage />}></Route>
           <Route path="/room/:roomCode" element={<RoomPage />}></Route>
         </Routes>
       </Router>
