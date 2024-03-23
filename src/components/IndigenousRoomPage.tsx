@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 
 // Component Imports:
 import { CrowdCard } from "./CrowdCard";
-import { SpeakerCard } from "./SpeakerCard";
 import { CircleSegmentRoomView } from "./room_views/CircleSegmentRoomView";
 import { SimpleRoomView } from "./room_views/SimpleRoomView";
 
@@ -162,48 +161,38 @@ export function IndigenousRoomPage() {
         <>
             <div className="flex flex-col justify-center items-center w-full">
 
+                {/* ROOM TITLE & Sub-Heading Section*/}
+                
                 <h1 className="mt-16 mb-2 text-4xl font-extrabold tracking-tight lg:text-5xl sm:text-lg">
                     {selfSpeaking ? "It's your turn to speak !" : "Mute & Listen to the speaker..."}
                 </h1>
 
-                {/* ROOM TITLE & Sub-Heading Section*/}
-
-                <div className="flex items-center">
-                    <h1 className="text-lg md:text-xl dark:text-gray-400 text-darkgrey mt-2">
-
-                        {Room ? <span className="mr-2">{Room.room_name}</span> : "Loading..."}
-
-                        {/* ROOM CODE & COPY DISPLAY */}
-
-                        <Button className="ml-2" onClick={() => { copyToClipboard() }}>
-                            {Room ? <span className="mr-1">{Room.room_code}</span> : "Loading..."} {copyButtonText}
-                        </Button>
-                    </h1>
-
-                </div>
-
-
-                <br />
-                <SpeakerCard />
-                <br />
 
                 <hr></hr>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl w-full px-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12">
+
+
                     <div className="flex items-center space-x-2">
-                        <Switch id="airplane-mode" onCheckedChange={handleSwitchChange} />
-                        <Label htmlFor="airplane-mode">
+                        <Switch id="view_swtch" onCheckedChange={handleSwitchChange} />
+                        <Label htmlFor="view_swtch">
                             {
                                 isSimpleView ? "Complex View" : "Simple View"
                             }
                         </Label>
                     </div>
+
+                    <div className="flex items-center space-x-2">
+                    <Label> {Room ? <span className="ml-16">{Room.room_name}</span> : "Loading..."} </Label>
+                    </div>
+
+
                 </div>
                 <br />
 
                 <div className="max-w-8xl w-full px-4">
                     {
                         isSimpleView ?
-                            <CircleSegmentRoomView isCallerSpeaking={selfSpeaking} /> :
+                            <CircleSegmentRoomView isCallerSpeaking={selfSpeaking}/> :
                             <SimpleRoomView isCallerSpeaking={selfSpeaking} />
                     }
                 </div>

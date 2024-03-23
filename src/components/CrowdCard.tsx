@@ -20,8 +20,6 @@ import {
 
 import { WebSocketSingleton } from "../core/WebSocketSingleton"
 
-type CardProps = React.ComponentProps<typeof Card>
-
 interface CrowdCardProps {
     displayName: string;
     displayOccupation: string | null;
@@ -34,10 +32,11 @@ interface CrowdCardProps {
 
 export function CrowdCard(props: CrowdCardProps) {
     const { displayName, displayOccupation, isCallerSpeaking, clientUUID, VISUAL_top_margin, VISUAL_rotation } = props;
-  
+
+    let WIDTH_STR = `w-[160px]`;
 
   return (
-<Card className="w-[120px]" style={{ transform: `rotate(${VISUAL_rotation}deg)`, marginTop: `${VISUAL_top_margin}em` }}>
+<Card className={WIDTH_STR} style={{ transform: `rotate(${VISUAL_rotation}deg)`, marginTop: `${VISUAL_top_margin}em` }}>
 
     {/* <CardHeader className="grid grid-cols-[auto_minmax(0,1fr)] gap-4"> */}
     <CardHeader>
