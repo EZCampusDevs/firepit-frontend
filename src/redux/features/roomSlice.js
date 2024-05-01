@@ -1,81 +1,81 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    room : null,
-    crowd: [],
-    speaker: null
+    room: null,
+    speaker: null,
 }
 
-const rebuildRoomContext = (state, speakerUUID) => {
-
-    //* Clear Crowd & Speaker for fresh rebuild:
-    state.crowd = []; state.speaker = null;
-
-    //* 2. Define the Crowd (Non-speakers) & Speaker himself
-    for(const participant of state.room.room_members){
-                    
-        if(participant.client_id !== speakerUUID){
-            state.crowd.push(participant)
-        } else {
-            state.speaker = participant;
-        }
-
-    }
-
+function sortClients(state) {
+    if (state.room) state.room.room_members.sort((a, b) => b.order - a.order)
 }
 
 export const roomSlice = createSlice({
     name: 'room',
     initialState,
     reducers: {
-        
-            setRoom: (state,action) => {
-                
-                //* 1. Set all Participants of Room
-                state.room = action.payload.room;
-                
-                //* 2. Build room context
-                rebuildRoomContext(state, state.room.room_speaker.client_id);
-                return;
-            },
+        setRoom: (state, action) => {
+            state.room = action.payload.room
+            state.speaker = action.payload.room.room_speaker
 
-            setSpeaker: (state,action) => {
-                rebuildRoomContext(state, action.payload.speaker_uuid);
-                return;
-            },
+            sortClients(state)
 
-            appendParticipant: (state,action) => {
+            return
+        },
 
-                const newcomer = action.payload.newcomer;
-                let incomingUniqueMember = false;
-
-                for(const participant of state.room.room_members) {
-                    if(participant.client_id === newcomer.client_id){
-                        incomingUniqueMember = true;
-                        return;
-                    }
-                }
-
-                //* Making sure Newcomer isn't already listed within the Room Members (Bug #2 quickfix)
-                if(!incomingUniqueMember) {
-                    state.room.room_members.push(action.payload.newcomer);
-                    state.crowd.push(action.payload.newcomer);
-                }
-                return;
-            },
-
-            removeParticipant: (state, action) => {
-                const departer = action.payload.departer;
-            
-                // Remove the departer from the room members
-                state.room.room_members = state.room.room_members.filter(participant => participant.client_id !== departer.client_id);
-                // Remove the departer from the crowd
-                state.crowd = state.crowd.filter(participant => participant.client_id !== departer.client_id);
+        setSpeaker: (state, action) => {
+            if (!state.room) {
+                return
             }
-            
-    }
+
+            const speaker_id = action.payload.speaker_id
+
+            for (const participant of state.room.room_members) {
+                if (participant.client_id === speaker_id) {
+                    state.speaker = participant
+                    return
+                }
+            }
+
+            return
+        },
+
+        appendParticipant: (state, action) => {
+            if (!state.room) {
+                return
+            }
+
+            const newcomer = action.payload.newcomer
+
+            for (const participant of state.room.room_members) {
+                if (participant.client_id === newcomer.client_id) {
+                    return
+                }
+            }
+
+            state.room.room_members.push(action.payload.newcomer)
+            sortClients(state)
+            return
+        },
+
+        removeParticipant: (state, action) => {
+            if (!state.room) {
+                return
+            }
+
+            const departer = action.payload.departer
+
+            // Remove the departer from the room members
+            state.room.room_members = state.room.room_members.filter(
+                (participant) => participant.client_id !== departer.client_id
+            )
+
+            sortClients(state)
+            return
+        },
+    },
 })
 
-export const { setRoom, setSpeaker, appendParticipant, removeParticipant } = roomSlice.actions;
+export const { setRoom, setSpeaker, appendParticipant, removeParticipant } =
+    roomSlice.actions
 
-export default roomSlice.reducer;
+export default roomSlice.reducer

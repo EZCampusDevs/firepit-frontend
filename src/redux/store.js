@@ -1,10 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit'
 
-//Reducers 
-import roomReducer from "./features/roomSlice.js";
+//Reducers
+import roomReducer from './features/roomSlice.js'
 
 export const store = configureStore({
-    reducer : {
-        room : roomReducer,
-    }
-});
+    reducer: {
+        room: roomReducer,
+    },
+})
