@@ -3,6 +3,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
+    setSelf,
     setRoom,
     setSpeaker,
     appendParticipant,
@@ -39,6 +40,7 @@ export function TestPage() {
     const WHO_AM_I_KEY = `${ROOM}whoami`
 
     const [quote, setQuote] = React.useState('Loading...')
+    const [clientUUID, setClientUUID] = React.useState('')
 
     const [width, setWidth] = React.useState(window.innerWidth)
     const [height, setHeight] = React.useState(window.innerHeight)
@@ -46,14 +48,20 @@ export function TestPage() {
     const [selfSpeaking, setSelfSpeaking] = React.useState(false)
 
     const Room = useSelector((state) => state.room.room)
-    const Crowd = Room ? Room.room_members : [] //useSelector((state) => state.room.room)
+    const Crowd = Room ? Room.room_members : []
     const Speaker = useSelector((state) => state.room.speaker)
+    const isSpeaker = Speaker && Speaker.client_id === clientUUID
     const dispatch = useDispatch()
+
 
     function wsCallback(wsResponse) {
         switch (wsResponse.messageType) {
             case SocketMessage.CLIENT_WHO_AM_I:
+
                 SetStorageJSON(WHO_AM_I_KEY, wsResponse.payload)
+
+                setClientUUID(wsResponse.payload.client.client_id)
+
                 return 0
 
             case SocketMessage.ROOM_INFO:
@@ -91,7 +99,7 @@ export function TestPage() {
         const ROOM_INFO = GetStorageJSON(ROOM)
 
         if (!ROOM || !ROOM_INFO) {
-            RedirectTo('/')
+            leaveRoom()
 
             return
         }
@@ -102,14 +110,11 @@ export function TestPage() {
 
         RequestRoomExists(ROOM)
             .then((exists) => {
-                console.log('Room exists')
 
                 if (!exists) {
-                    RedirectTo('/')
+                    leaveRoom()
                     return
                 }
-
-                console.log('Room info: ', ROOM_INFO)
 
                 wsManager.connect(
                     ROOM,
@@ -167,6 +172,7 @@ export function TestPage() {
                     return (
                         <LogUserItem
                             class="inline w-[20%]"
+                            // shouldHavePassStickButton={clientUUID === }
                             displayName={val.client_name}
                             displayOccupation={val.client_occupation}
                             key={val.client_id}
@@ -267,18 +273,7 @@ export function TestPage() {
         )
     }
 
-    function btnClick(e) {
-        console.log(log_north.current)
-
-        const paragraphElement = <p>Lorem ipsum dolor sit amet</p>
-
-        // Append the paragraph element to the DOM node referenced by the ref
-        if (log_north.current) {
-            log_north.current.appendChild(paragraphElement)
-        }
-    }
-
-    function leaveRoomClick() {
+    function leaveRoom() {
         console.log('leave room clicked')
 
         RemoveStorage(ROOM)
@@ -306,12 +301,16 @@ export function TestPage() {
 
             {MakeAllLogs(width, height)}
 
+
             <Button
                 className="absolute bottom-0 right-0 m-2"
-                onClick={leaveRoomClick}
+                onClick={leaveRoom}
                 title="Leave the room. You will be able to join back using the same room code, but will lose your spot!"
             >
                 Leave Room
+                
+                { clientUUID }
+                { isSpeaker ? " is speaker" : " not speaker"  }
             </Button>
         </div>
     )

@@ -13,6 +13,7 @@ export const roomSlice = createSlice({
     name: 'room',
     initialState,
     reducers: {
+
         setRoom: (state, action) => {
             state.room = action.payload.room
             state.speaker = action.payload.room.room_speaker
