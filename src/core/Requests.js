@@ -18,6 +18,7 @@ export function RequestRoomExists(roomId) {
 
 export function CreateJoinRoomQueryParam(roomId, displayName, rtoken) {
     var t = ''
+
     if (rtoken) {
         t = `&rtoken=${rtoken}`
     }
