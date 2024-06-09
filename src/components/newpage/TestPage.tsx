@@ -57,6 +57,7 @@ export function TestPage() {
     const { ROOM } = useParams()
     const WHO_AM_I_KEY = `${ROOM}whoami`
 
+    const [webSocket, setWebSocket] = React.useState(null)
     const [webSocketReady, setWebSocketReady] = React.useState(false)
     const [webSocketURI, setWebSocketURI] = React.useState(null)
     const [webSocketReconnect, setWebSocketReconnect] = React.useState(0)
@@ -95,10 +96,15 @@ export function TestPage() {
         }
 
         newWebSocket.onmessage = (event) => {
+
             const wsResponse = JSON.parse(event.data)
 
+            console.log("000000000000000 ", wsResponse);
+
             switch (wsResponse.messageType) {
+
                 case SocketMessage.CLIENT_WHO_AM_I:
+
                     SetStorageJSON(WHO_AM_I_KEY, wsResponse.payload)
 
                     setClientUUID(wsResponse.payload.client.client_id)
@@ -106,20 +112,25 @@ export function TestPage() {
                     break
 
                 case SocketMessage.ROOM_INFO:
+
                     sortRoom(wsResponse.payload.room)
 
                     setRoomInfo(wsResponse.payload.room)
 
+                    console.log("Setting speaker: ", wsResponse.payload.room.room_speaker);
                     setSpeaker(wsResponse.payload.room.room_speaker)
 
                     break
 
                 case SocketMessage.CLIENT_SET_SPEAKER:
-                    setSpeaker(wsResponse.payload)
+
+                    console.log("Setting speaker: ", wsResponse.payload);
+                    setSpeaker(wsResponse.payload.client)
 
                     break
 
                 case SocketMessage.CLIENT_JOIN_ROOM:
+
                     setRoomInfo((prevRoomInfo) => {
                         const newRoom = { ...prevRoomInfo }
 
@@ -136,6 +147,7 @@ export function TestPage() {
                     break
 
                 case SocketMessage.CLIENT_LEAVE_ROOM:
+
                     setRoomInfo((prevRoomInfo) => {
                         const newRoom = { ...prevRoomInfo }
 
@@ -176,6 +188,8 @@ export function TestPage() {
             newWebSocket.close()
             setWebSocketReady(false)
         }
+        
+        setWebSocket(newWebSocket);
 
         return () => {
             if (newWebSocket) newWebSocket.close()
@@ -229,6 +243,35 @@ export function TestPage() {
         }
     }, [])
 
+
+    const websocketSetTheNewSpeaker = (passingToUUID) => {
+
+        if(!websocket) {
+
+            console.warn("Cannot set speaker because websocket is null");
+
+            return;
+        }
+
+        if(websocket.readyState !== WebSocket.OPEN) {
+
+            console.warn("Cannot set speaker because websocket is not open");
+
+            setWebSocketReconnect(webSocketReconnect + 1)
+
+            return;
+        }
+
+        websocket.send(
+            JSON.stringify({
+                messageType: 30,
+                payload: {
+                    speaker_id: passingToUUID,
+                },
+            })
+        )
+    }
+
     const MakeLog = (children, url, scale, rotation, width, height, x, y) => {
         // this makes top and left css adjust by the center of the element
         // this is important because it is unaware of the rotation
@@ -259,6 +302,7 @@ export function TestPage() {
                         <LogUserItem
                             class="inline w-[20%]"
                             shouldHavePassStickButton={IsSpeaking}
+                            passToSpeakerCallback={websocketSetTheNewSpeaker}
                             displayName={val.client_name}
                             displayOccupation={val.client_occupation}
                             key={val.client_id}

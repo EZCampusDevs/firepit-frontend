@@ -33,6 +33,7 @@ export function LogUserItem(props: LogUserItemProps) {
         displayOccupation,
         isSpeaker,
         clientUUID,
+        passToSpeakerCallback,
         VISUAL_top_margin,
         VISUAL_rotation,
     } = props
@@ -48,7 +49,11 @@ export function LogUserItem(props: LogUserItemProps) {
             <CardTitle>{displayName}</CardTitle>
             <CardDescription>{displayOccupation}</CardDescription>
 
-            {shouldHavePassStickButton && !isSpeaker && <Button>Pass</Button>}
+            {shouldHavePassStickButton && !isSpeaker && 
+                <Button onClick={() => passToSpeakerCallback(clientUUID)}>
+                Pass
+                </Button>
+            }
         </div>
     )
 }
