@@ -17,7 +17,8 @@ import { assertJoinRoom } from '../../core/assert'
 
 import { ErrorAlert } from '../ErrorAlert'
 
-export function JoinRoomPage() {
+export function JoinRoomPage(props) {
+    const { roomCode } = props
     //* ------ Join Room State(s) & Constants ------
 
     const [errMsg, setErrMsg] = React.useState('')
@@ -42,6 +43,7 @@ export function JoinRoomPage() {
                     <Input
                         type="text"
                         placeholder="e.g., A1B2C3"
+                        defaultValue={roomCode}
                         ref={roomCodeInput}
                         sizeStyle={'h-12'}
                     />

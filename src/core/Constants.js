@@ -30,3 +30,14 @@ export const WEBSOCKET_PROT = _WEBSOCKET_PROT
 export const LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY = 'requested_self'
 
 export const DEBUG = _WE_ARE_DEV
+
+export const SocketMessage = {
+    SET_CLIENT_NAME: 10,
+    CLIENT_SET_SPEAKER: 30,
+    CLIENT_LEAVE_ROOM: 40,
+    CLIENT_JOIN_ROOM: 50,
+    CLIENT_WHO_AM_I: 100,
+    ROOM_INFO: 60,
+    SERVER_OK_MESSAGE: 200,
+    SERVER_BAD_MESSAGE: 400,
+}

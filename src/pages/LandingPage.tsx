@@ -1,15 +1,17 @@
 //* --- REACT & UI IMPORTS ---
 import React from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ModeToggle } from './mode-toggle'
+import { ModeToggle } from '../components/mode-toggle'
+import { useParams } from 'react-router-dom'
 
 //* --- Component IMPORTS ---
-import { JoinRoomPage } from './landing_views/JoinRoomPage'
-import { CreateRoomPage } from './landing_views/CreateRoomPage'
+import { JoinRoomPage } from '../components/landing_views/JoinRoomPage'
+import { CreateRoomPage } from '../components/landing_views/CreateRoomPage'
 
 import { getRngQuote } from '../core/Requests'
 
 export function LandingPage() {
+    const { ROOM } = useParams()
     const [quote, setQuote] = React.useState('Loading...')
 
     React.useEffect(() => {
@@ -38,7 +40,7 @@ export function LandingPage() {
                 </TabsList>
 
                 {/* JOIN ROOM TAB MAIN UI */}
-                <JoinRoomPage />
+                <JoinRoomPage roomCode={ROOM} />
 
                 {/* CREATE ROOM TAB MAIN UI */}
                 <CreateRoomPage />

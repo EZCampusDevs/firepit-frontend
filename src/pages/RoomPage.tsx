@@ -1,45 +1,35 @@
 //* --- REACT & UI IMPORTS ---
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import {
-    setSelf,
-    setRoom,
-    setSpeaker,
-    appendParticipant,
-    removeParticipant,
-} from '../../redux/features/roomSlice'
 
 //* --- Component IMPORTS ---
-import { getRngQuote } from '../../core/Requests.js'
-import { LogUserItem } from './LogUserItem'
+import { getRngQuote } from '../core/Requests.js'
+import { LogUserItem } from '../components/LogUserItem'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 import {
-    WebSocketSingleton,
     SocketMessage,
-} from '../../core/WebSocketSingleton'
-import {
-    LOCAL_STORAGE__JOIN_ROOM_QUERY_KEY,
-    HTTP_HOST,
     RAW_HTTP_HOST,
     WEBSOCKET_PROT,
+    HTTP_HOST,
     DEBUG,
-} from '../../core/Constants'
+} from '../core/Constants'
 import {
     RedirectTo,
     GetStorageJSON,
     SetStorageJSON,
     RemoveStorage,
-} from '../../core/Helpers.js'
+} from '../core/Helpers.js'
 import {
     RequestRoomExists,
     CreateJoinRoomQueryParam,
-} from '../../core/Requests.js'
+    WebsocketSetSpeakerTo,
+} from '../core/Requests.js'
 
-import firepiturl from '../../assets/firepit.gif'
-import logurl from '../../assets/log.png'
-import bgurl from '../../assets/bg.png'
+import firepiturl from '../assets/firepit.gif'
+import logurl from '../assets/log.png'
+import bgurl from '../assets/bg.png'
 
 function sortRoom(room) {
     if (room) room.room_members.sort((a, b) => b.order - a.order)
@@ -53,7 +43,7 @@ function leaveRoom(ROOM, WHO_AM_I_KEY) {
     RedirectTo('/')
 }
 
-export function TestPage() {
+export function RoomPage() {
     const { ROOM } = useParams()
     const WHO_AM_I_KEY = `${ROOM}whoami`
 
@@ -62,6 +52,7 @@ export function TestPage() {
     const [webSocketURI, setWebSocketURI] = React.useState(null)
     const [webSocketReconnect, setWebSocketReconnect] = React.useState(0)
 
+    const [inviteDialogOpen, setInviteDialogOpen] = React.useState(false)
     const [quote, setQuote] = React.useState('Loading...')
     const [clientUUID, setClientUUID] = React.useState('')
 
@@ -96,15 +87,12 @@ export function TestPage() {
         }
 
         newWebSocket.onmessage = (event) => {
-
             const wsResponse = JSON.parse(event.data)
 
-            console.log("000000000000000 ", wsResponse);
+            console.log('000000000000000 ', wsResponse)
 
             switch (wsResponse.messageType) {
-
                 case SocketMessage.CLIENT_WHO_AM_I:
-
                     SetStorageJSON(WHO_AM_I_KEY, wsResponse.payload)
 
                     setClientUUID(wsResponse.payload.client.client_id)
@@ -112,25 +100,25 @@ export function TestPage() {
                     break
 
                 case SocketMessage.ROOM_INFO:
-
                     sortRoom(wsResponse.payload.room)
 
                     setRoomInfo(wsResponse.payload.room)
 
-                    console.log("Setting speaker: ", wsResponse.payload.room.room_speaker);
+                    console.log(
+                        'Setting speaker: ',
+                        wsResponse.payload.room.room_speaker
+                    )
                     setSpeaker(wsResponse.payload.room.room_speaker)
 
                     break
 
                 case SocketMessage.CLIENT_SET_SPEAKER:
-
-                    console.log("Setting speaker: ", wsResponse.payload);
+                    console.log('Setting speaker: ', wsResponse.payload)
                     setSpeaker(wsResponse.payload.client)
 
                     break
 
                 case SocketMessage.CLIENT_JOIN_ROOM:
-
                     setRoomInfo((prevRoomInfo) => {
                         const newRoom = { ...prevRoomInfo }
 
@@ -147,7 +135,6 @@ export function TestPage() {
                     break
 
                 case SocketMessage.CLIENT_LEAVE_ROOM:
-
                     setRoomInfo((prevRoomInfo) => {
                         const newRoom = { ...prevRoomInfo }
 
@@ -188,8 +175,8 @@ export function TestPage() {
             newWebSocket.close()
             setWebSocketReady(false)
         }
-        
-        setWebSocket(newWebSocket);
+
+        setWebSocket(newWebSocket)
 
         return () => {
             if (newWebSocket) newWebSocket.close()
@@ -243,33 +230,32 @@ export function TestPage() {
         }
     }, [])
 
+    const showInviteDialog = () => {
+        setInviteDialogOpen(true)
+    }
+
+    const hideInviteDialog = () => {
+        setInviteDialogOpen(false)
+    }
 
     const websocketSetTheNewSpeaker = (passingToUUID) => {
+        if (!webSocket) {
+            console.warn('Cannot set speaker because websocket is null')
 
-        if(!websocket) {
-
-            console.warn("Cannot set speaker because websocket is null");
-
-            return;
+            return
         }
 
-        if(websocket.readyState !== WebSocket.OPEN) {
-
-            console.warn("Cannot set speaker because websocket is not open");
+        if (webSocket.readyState !== WebSocket.OPEN) {
+            console.warn('Cannot set speaker because websocket is not open')
 
             setWebSocketReconnect(webSocketReconnect + 1)
 
-            return;
+            return
         }
 
-        websocket.send(
-            JSON.stringify({
-                messageType: 30,
-                payload: {
-                    speaker_id: passingToUUID,
-                },
-            })
-        )
+        console.log(`Setting the speaker to ${passingToUUID}`)
+
+        WebsocketSetSpeakerTo(webSocket, passingToUUID)
     }
 
     const MakeLog = (children, url, scale, rotation, width, height, x, y) => {
@@ -300,6 +286,11 @@ export function TestPage() {
                 {children.map((val) => {
                     return (
                         <LogUserItem
+                            width={width / 5}
+                            height={height}
+                            style={{
+                                transform: `rotate(${-rotation}deg)`,
+                            }}
                             class="inline w-[20%]"
                             shouldHavePassStickButton={IsSpeaking}
                             passToSpeakerCallback={websocketSetTheNewSpeaker}
@@ -405,6 +396,8 @@ export function TestPage() {
         )
     }
 
+    const bottomBarHeight = 64
+
     return (
         <div
             className="flex flex-col justify-between items-center w-full h-screen"
@@ -423,34 +416,80 @@ export function TestPage() {
                 ></img>
             </div>
 
-            {MakeAllLogs(width, height)}
+            {MakeAllLogs(width, height - bottomBarHeight)}
 
-            {clientUUID && (
-                <Button
-                    className="absolute top-0 right-0 m-2"
-                    onClick={() => leaveRoom(ROOM, WHO_AM_I_KEY)}
-                    title="Reconnecting..."
-                >
-                {clientUUID}
-                </Button>
-            )}
-            {!webSocketReady && (
-                <Button
-                    className="absolute top-0 left-0 m-2"
-                    onClick={() => leaveRoom(ROOM, WHO_AM_I_KEY)}
-                    title="Reconnecting..."
-                >
-                    Reconnecting...
-                </Button>
-            )}
-
-            <Button
-                className="absolute bottom-0 right-0 m-2"
-                onClick={() => leaveRoom(ROOM, WHO_AM_I_KEY)}
-                title="Leave the room. You will be able to join back using the same room code, but will lose your spot!"
+            <div
+                className="absolute right-0 bg-gray-500 rounded-s"
+                style={{
+                    bottom: `${bottomBarHeight}px`,
+                    // backgroundSize: 'cover',
+                    // backgroundImage: `url(${logurl})`,
+                    height: inviteDialogOpen ? '200px' : '0px',
+                    width: inviteDialogOpen ? '500px' : '500px',
+                    visibility: inviteDialogOpen ? 'visible' : 'hidden',
+                    transition: 'height 0.5s, visibility 0.35s ease',
+                }}
             >
-                Leave Room
-            </Button>
+                {inviteDialogOpen && (
+                    <div className="w-full h-full flex-col flex-grow">
+                        <div className="flex justify-end p-2">
+                            <Button onClick={hideInviteDialog}>X</Button>
+                        </div>
+
+                        <div className="mx-2">
+                            <h2 className="text-lg font-medium">
+                                Share this link
+                            </h2>
+                            <Input
+                                readOnly
+                                type="text"
+                                value={HTTP_HOST + '/join/' + ROOM}
+                                sizeStyle={'h-12'}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div
+                className="flex bottom-0 w-full h-16 bg-gray-500"
+                style={{
+                    backgroundImage: `url(${logurl})`,
+                }}
+            >
+                <Button
+                    className="mx-1 my-2"
+                    onClick={() => leaveRoom(ROOM, WHO_AM_I_KEY)}
+                    title="Leave the room. You will be able to join back using the same room code, but will lose your spot!"
+                >
+                    Leave Room
+                </Button>
+
+                {DEBUG && clientUUID && (
+                    <Button
+                        className="mx-1 my-2"
+                        onClick={() => leaveRoom(ROOM, WHO_AM_I_KEY)}
+                        title="Reconnecting..."
+                    >
+                        {clientUUID}
+                    </Button>
+                )}
+
+                {!webSocketReady && (
+                    <Button
+                        className="mx-1 my-2"
+                        title="Connection has been lost, reconnecting..."
+                    >
+                        Connection has been lost, reconnecting...
+                    </Button>
+                )}
+                <Button
+                    className="ml-auto mr-1 my-2"
+                    onClick={showInviteDialog}
+                >
+                    Invite To Room
+                </Button>
+            </div>
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
-import { LandingPage } from './components/LandingPage'
-import { TestPage } from './components/newpage/TestPage'
+import { LandingPage } from './pages/LandingPage'
+import { RoomPage } from './pages/RoomPage.tsx'
 
 import { ThemeProvider } from '@/components/theme-provider'
 
@@ -11,8 +11,11 @@ function App() {
             <Router>
                 <Routes>
                     <Route path="/" element={<LandingPage />}></Route>
-                    <Route path="/test" element={<TestPage />}></Route>
-                    <Route path="/room/:ROOM/" element={<TestPage />}></Route>
+                    <Route
+                        path="/join/:ROOM/"
+                        element={<LandingPage />}
+                    ></Route>
+                    <Route path="/room/:ROOM/" element={<RoomPage />}></Route>
                 </Routes>
             </Router>
         </ThemeProvider>

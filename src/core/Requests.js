@@ -1,4 +1,4 @@
-import { HTTP_HOST } from './Constants'
+import { HTTP_HOST, SocketMessage } from './Constants'
 
 // -------- Creation of a Room FUNCTION --------:
 //* 1. Make's the POST Request to Create a Room
@@ -14,6 +14,19 @@ export function RequestRoomExists(roomId) {
     return fetch(`${HTTP_HOST}/room/${roomId}`, { method: 'GET' })
         .then((response) => response.json())
         .then((j) => j.room_exists)
+}
+
+export function WebsocketSetSpeakerTo(websocket, speakerUUID) {
+    websocket.send(
+        JSON.stringify({
+            messageType: SocketMessage.CLIENT_SET_SPEAKER,
+            payload: {
+                client: {
+                    client_id: speakerUUID,
+                },
+            },
+        })
+    )
 }
 
 export function CreateJoinRoomQueryParam(roomId, displayName, rtoken) {
@@ -44,12 +57,6 @@ export function roomStringEncodeAndAccess(
         `&avatar=${encodeURIComponent(avatarIndexInt)}`
 
     return roomPayload
-}
-
-function getOKMessage() {
-    return JSON.stringify({
-        messageType: 200,
-    })
 }
 
 export async function getRngQuote(callback) {

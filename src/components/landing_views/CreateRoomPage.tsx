@@ -128,6 +128,8 @@ export function CreateRoomPage() {
                                 return
                             }
 
+                            console.log('Requesting to join room')
+
                             RequestNewRoomCode()
                                 .then((roomCode) =>
                                     JoinRoom(roomCode, nickname)
