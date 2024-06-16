@@ -12,6 +12,10 @@ import {
     CardTitle,
 } from '@/components/ui/card'
 
+import featheraUrl from '../assets/feathera.png'
+import featherbUrl from '../assets/featherb.png'
+import feathercUrl from '../assets/featherc.png'
+
 export function LogUserItem(props) {
     const {
         width,
@@ -28,10 +32,11 @@ export function LogUserItem(props) {
         width: width,
         height: height,
     }
-    let speakerStyles = ''
+
+    let speakerStyles = ' bg-gray-600'
 
     if (isSpeaker) {
-        speakerStyles = ' bg-red-500'
+        speakerStyles = ' bg-gray-500'
     }
 
     if (style) {
@@ -47,6 +52,18 @@ export function LogUserItem(props) {
             style={fullStyles}
         >
             <CardTitle>{displayName}</CardTitle>
+
+            {isSpeaker && (
+                <center>
+                    <img
+                        src={featherbUrl}
+                        style={{
+                            animation: 'rock 1s infinite',
+                            transformOrigin: '50% 50%',
+                        }}
+                    ></img>
+                </center>
+            )}
 
             {shouldHavePassStickButton && !isSpeaker && (
                 <Button

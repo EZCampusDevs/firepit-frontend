@@ -66,6 +66,20 @@
 
         --ring: 217.2 32.6% 17.5%;
     }
+
+    @keyframes rock {
+        0% {
+            transform: rotate(-5deg);
+        }
+
+        50% {
+            transform: rotate(5deg);
+        }
+
+        100% {
+            transform: rotate(-5deg);
+        }
+    }
 }
 
 @layer base {
