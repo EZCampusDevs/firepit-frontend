@@ -16,7 +16,7 @@ if (
     _WE_ARE_DEV = true
     console.log('We are Development')
 } else {
-    _RAW_HTTP_HOST = 'firepitapi.astoryofand.com'
+    _RAW_HTTP_HOST = 'firepit2.astoryofand.com'
     _HTTP_HOST = `https://${_RAW_HTTP_HOST}`
     _WEBSOCKET_PROT = 'wss'
     _WE_ARE_DEV = false
