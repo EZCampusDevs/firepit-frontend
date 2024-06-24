@@ -443,7 +443,7 @@ export function RoomPage() {
                             <Input
                                 readOnly
                                 type="text"
-                                value={HTTP_HOST + '/join/' + ROOM}
+                                value={'https://firepit.astoryofand.com/join/' + ROOM}
                                 sizeStyle={'h-12'}
                             />
                         </div>
